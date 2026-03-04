@@ -1,5 +1,5 @@
 import { useState, useMemo, useEffect } from 'react';
-import { Filter, Info } from 'lucide-react';
+import { Filter, Info, Download } from 'lucide-react';
 import { useWebHaptics } from 'web-haptics/react';
 import data from '../data.json';
 import precomputedRoutes from './routes.json';
@@ -109,6 +109,72 @@ export default function App() {
     return routes;
   }, [themes]);
 
+  // Generate and download directions for active routes
+  const downloadDirections = () => {
+    const themeLabels: Record<string, string> = {
+      corpi: 'Corpi', case: 'Casa', cose: 'Cose', amore: 'Amore'
+    };
+    const activeThemes = Object.entries(themes).filter(([, v]) => v).map(([k]) => k);
+    if (activeThemes.length === 0) return;
+
+    let text = 'ITINERARI AL FEMMINILE A MILANO\n';
+    text += 'Le vie della parità — Indicazioni di percorso\n';
+    text += '='.repeat(50) + '\n\n';
+
+    for (const themeKey of activeThemes) {
+      const label = themeLabels[themeKey] || themeKey;
+      text += `\n${'—'.repeat(40)}\n`;
+      text += `PERCORSO: ${label.toUpperCase()}\n`;
+      text += `${'—'.repeat(40)}\n\n`;
+
+      // Get the stones for this theme in route order (nearest-neighbor from OSRM)
+      const stones = data.filter((d: any) => {
+        if (!d.lat || !d.lng || !d.raw) return false;
+        if (themeKey === 'cose') return d.raw.cose == 1 || d.raw['cose '] == 1;
+        return d.raw[themeKey] == 1;
+      });
+
+      // Sort stones by proximity to the route order from routes.json
+      const r = precomputedRoutes as unknown as Record<string, [number, number][]>;
+      const routeCoords = r[themeKey];
+      if (routeCoords && routeCoords.length > 0) {
+        // For each stone, find its closest point on the route to determine visit order
+        const withOrder = stones.map((s: any) => {
+          let minDist = Infinity;
+          let bestIdx = 0;
+          for (let i = 0; i < routeCoords.length; i++) {
+            const d = Math.pow(s.lat - routeCoords[i][0], 2) + Math.pow(s.lng - routeCoords[i][1], 2);
+            if (d < minDist) { minDist = d; bestIdx = i; }
+          }
+          return { stone: s, order: bestIdx };
+        });
+        withOrder.sort((a: any, b: any) => a.order - b.order);
+
+        withOrder.forEach(({ stone }: any, idx: number) => {
+          text += `Tappa ${idx + 1}: ${stone.name}\n`;
+          text += `  Indirizzo: ${stone.address}\n`;
+          if (stone.birthDate) text += `  Nascita: ${stone.birthDate}\n`;
+          if (stone.deathDate) text += `  Morte: ${stone.deathDate}\n`;
+          if (stone.deathPlace) text += `  Luogo di morte: ${stone.deathPlace}\n`;
+          text += '\n';
+        });
+
+        text += `Totale tappe: ${withOrder.length}\n`;
+      }
+    }
+
+    text += '\n' + '='.repeat(50) + '\n';
+    text += 'Buon cammino!\n';
+
+    const blob = new Blob([text], { type: 'text/plain;charset=utf-8' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `itinerario_${activeThemes.join('_')}.txt`;
+    a.click();
+    URL.revokeObjectURL(url);
+  };
+
   return (
     <div className="relative flex flex-col md:flex-row h-screen w-full bg-slate-50 overflow-hidden font-sans">
       {showSplash && (
@@ -206,6 +272,19 @@ export default function App() {
           </Card>
         </div >
         <MapComponent markers={filteredMarkers} routes={thematicRoutes} onOpenDetail={setActiveDetail} />
+
+        {/* Download Directions Button */}
+        {thematicRoutes.length > 0 && (
+          <div className="absolute bottom-6 left-1/2 -translate-x-1/2 z-[999]">
+            <Button
+              onClick={downloadDirections}
+              className="gap-2 rounded-full px-6 py-3 shadow-xl bg-gradient-to-r from-orange-500 to-purple-600 text-white font-semibold hover:from-orange-600 hover:to-purple-700 transition-all duration-300 hover:shadow-2xl hover:scale-105"
+            >
+              <Download className="w-4 h-4" />
+              Scarica indicazioni
+            </Button>
+          </div>
+        )}
       </div >
 
       {/* Thematic Deep Dive Sheet */}
