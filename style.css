@@ -1,4 +1,5 @@
-body, html {
+body,
+html {
     margin: 0;
     padding: 0;
     height: 100%;
@@ -9,5 +10,27 @@ body, html {
 #map {
     height: 100%;
     width: 100%;
-    z-index: 1; /* Assicura che la mappa stia sotto le UI aggiunte dopo */
+    z-index: 1;
+}
+
+/* Stile per i marker d'oro rettangolari (Pietre d'Inciampo) */
+.gold-stone-marker {
+    background: linear-gradient(135deg, #d4af37 0%, #ffdf00 50%, #b8860b 100%);
+    border: 1px solid #7c5c02;
+    box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.5);
+    border-radius: 2px;
+    width: 100%;
+    height: 100%;
+    transition: transform 0.2s ease-in-out;
+}
+
+.gold-stone-marker:hover {
+    transform: scale(1.2);
+    cursor: pointer;
+}
+
+.popup-content h3 {
+    color: #b8860b;
+    border-bottom: 1px solid #eee;
+    padding-bottom: 5px;
 }

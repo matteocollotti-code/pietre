@@ -19,15 +19,13 @@ L.control.zoom({ position: 'bottomright' }).addTo(map);
 // Inizializza un marker cluster group o un layer group
 const markersLayer = L.layerGroup().addTo(map);
 
-// Definizione dello stile per i marker: Pietre d'Inciampo
-const circleMarkerStyle = {
-    radius: 6,
-    fillColor: "#ff9900", // Arancione oro
-    color: "#000",
-    weight: 1,
-    opacity: 1,
-    fillOpacity: 0.8
-};
+// Definizione dello stile per i marker: Pietre d'Inciampo come rettangoli dorati
+const goldIcon = L.divIcon({
+    className: 'custom-div-icon',
+    html: "<div class='gold-stone-marker'></div>",
+    iconSize: [12, 12], // Dimensioni del rettangolo d'oro
+    iconAnchor: [6, 6]
+});
 
 // Funzione per mostrare i punti
 function loadMarkers(data) {
@@ -47,7 +45,7 @@ function loadMarkers(data) {
                 </div>
             `;
 
-            const marker = L.circleMarker([item.lat, item.lng], circleMarkerStyle)
+            const marker = L.marker([item.lat, item.lng], { icon: goldIcon })
                 .bindPopup(popupContent);
 
             markersLayer.addLayer(marker);
