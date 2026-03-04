@@ -16,8 +16,21 @@ L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r
 
 L.control.zoom({ position: 'bottomright' }).addTo(map);
 
-// Inizializza un marker cluster group o un layer group
-const markersLayer = L.layerGroup().addTo(map);
+// Inizializza un marker cluster group per gestire i marker sovrapposti
+const markersLayer = L.markerClusterGroup({
+    spiderfyOnMaxZoom: true,
+    showCoverageOnHover: false,
+    zoomToBoundsOnClick: true,
+    maxClusterRadius: 20, // Raggio piccolo per clusterizzare solo i punti davvero vicini/sovrapposti
+    iconCreateFunction: function (cluster) {
+        // Stile del cluster con raggruppamento
+        return L.divIcon({
+            html: `<div style="background-color: #d4af37; border: 2px solid #7c5c02; color: black; border-radius: 50%; width: 24px; height: 24px; display: flex; align-items: center; justify-content: center; font-weight: bold;">${cluster.getChildCount()}</div>`,
+            className: 'custom-cluster-icon',
+            iconSize: L.point(24, 24)
+        });
+    }
+}).addTo(map);
 
 // Definizione dello stile per i marker: Pietre d'Inciampo come rettangoli dorati
 const goldIcon = L.divIcon({
