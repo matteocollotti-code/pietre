@@ -5779,5 +5779,142 @@
       "cose ": 0,
       "amore": 0
     }
+  },
+  {
+    "name": "Bortolotti Ezio",
+    "address": "via Gadames 119",
+    "birthDate": "8656",
+    "deathDate": "16557",
+    "deathPlace": "Gusen",
+    "age": null,
+    "lat": 45.4999643,
+    "lng": 9.1270611,
+    "raw": {
+      "__EMPTY": "30",
+      "Cognome e Nome": "Bortolotti Ezio",
+      "genere": "m",
+      "Data di\nNascita": 8656,
+      "Trasporto": 119,
+      "Luogo di\nMorte": "Gusen",
+      "Data di\nMorte": 16557,
+      "corpi": 0,
+      "case": 0,
+      "cose ": 0,
+      "amore": 0
+    }
+  },
+  {
+    "name": "Ciocca Carlo",
+    "address": "via n.Palmieri 18",
+    "birthDate": "1996",
+    "deathDate": "16396",
+    "deathPlace": "Ebensee",
+    "age": null,
+    "lat": 45.4348902,
+    "lng": 9.1770735,
+    "raw": {
+      "__EMPTY": "43",
+      "Cognome e Nome": "Ciocca Carlo",
+      "genere": "m",
+      "Data di\nNascita": 1996,
+      "Trasporto": 32,
+      "Luogo di\nMorte": "Ebensee",
+      "Data di\nMorte": 16396,
+      "corpi": 0,
+      "case": 0,
+      "cose ": 0,
+      "amore": 0
+    }
+  },
+  {
+    "name": "Di Veroli Michele",
+    "address": "via Erodoto 2",
+    "birthDate": "13/05/1895",
+    "deathDate": "",
+    "deathPlace": "Auschwitz",
+    "age": null,
+    "lat": 45.5089884,
+    "lng": 9.2231596,
+    "raw": {
+      "__EMPTY": "67",
+      "Cognome e Nome": "Di Veroli Michele",
+      "genere": "m",
+      "Data di\nNascita": "13/05/1895",
+      "Trasporto": 37,
+      "Luogo di\nMorte": "Auschwitz",
+      "corpi": 0,
+      "case": 0,
+      "cose ": 0,
+      "amore": 0
+    }
+  },
+  {
+    "name": "Spizzichino Regina",
+    "address": "via Erodoto 2",
+    "birthDate": "07/03/1896",
+    "deathDate": "16368",
+    "deathPlace": "Auschwitz",
+    "age": null,
+    "lat": 45.5089884,
+    "lng": 9.2231596,
+    "raw": {
+      "__EMPTY": "208",
+      "Cognome e Nome": "Spizzichino Regina",
+      "genere": "f",
+      "Data di\nNascita": "07/03/1896",
+      "Trasporto": 72,
+      "Luogo di\nMorte": "Auschwitz",
+      "Data di\nMorte": 16368,
+      "corpi": 0,
+      "case": 0,
+      "cose ": 0,
+      "amore": 0
+    }
+  },
+  {
+    "name": "Negroni Luigi",
+    "address": "via palmieri 22",
+    "birthDate": "20/10/1898",
+    "deathDate": "3/3/1945",
+    "deathPlace": "Mauthausen SL",
+    "age": null,
+    "lat": 45.4348833,
+    "lng": 9.1776168,
+    "raw": {
+      "__EMPTY": "152",
+      "Cognome e Nome": "Negroni Luigi",
+      "genere": "m",
+      "Data di\nNascita": "20/10/1898",
+      "Trasporto": 32,
+      "Luogo di\nMorte": "Mauthausen SL",
+      "Data di\nMorte": "3/3/1945",
+      "corpi": 0,
+      "case": 0,
+      "cose ": 0,
+      "amore": 0
+    }
+  },
+  {
+    "name": "Filippi Alvaro",
+    "address": "viale certosa 97",
+    "birthDate": "8880",
+    "deathDate": "16553",
+    "deathPlace": "Gusen",
+    "age": null,
+    "lat": 45.493925,
+    "lng": 9.1424996,
+    "raw": {
+      "__EMPTY": "75",
+      "Cognome e Nome": "Filippi Alvaro",
+      "genere": "m",
+      "Data di\nNascita": 8880,
+      "Trasporto": 119,
+      "Luogo di\nMorte": "Gusen",
+      "Data di\nMorte": 16553,
+      "corpi": 0,
+      "case": 0,
+      "cose ": 0,
+      "amore": 0
+    }
   }
 ]

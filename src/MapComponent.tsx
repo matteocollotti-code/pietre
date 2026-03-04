@@ -3,6 +3,7 @@ import { MapContainer, TileLayer, Marker, Popup, useMap, Polyline } from 'react-
 import MarkerClusterGroup from 'react-leaflet-cluster';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
+import { Button } from '@/components/ui/button';
 
 // Fix per l'icona di default di Leaflet in React
 delete (L.Icon.Default.prototype as any)._getIconUrl;
@@ -97,9 +98,10 @@ function MilanBoundary() {
 interface MapProps {
     markers: any[];
     routes?: { id: string, color: string, points: [number, number][] }[];
+    onOpenDetail?: (info: { name: string, theme: string }) => void;
 }
 
-export default function MapComponent({ markers, routes = [] }: MapProps) {
+export default function MapComponent({ markers, routes = [], onOpenDetail }: MapProps) {
     return (
         <div className="w-full h-full relative z-0">
             <MapContainer
@@ -155,6 +157,21 @@ export default function MapComponent({ markers, routes = [] }: MapProps) {
                                         {item.deathDate && <p className="m-0 mb-1"><strong>{labelMorto}</strong> {item.deathDate}</p>}
                                         {item.deathPlace && <p className="m-0 mb-1"><strong>{labelLuogoMorte}</strong> {item.deathPlace}</p>}
                                         {item.age && <p className="m-0 mb-1"><strong>Età:</strong> {item.age}</p>}
+
+                                        <div className="mt-3 flex flex-col gap-1.5">
+                                            {(item.raw?.corpi === 1 || item.raw?.corpi === '1') && (
+                                                <Button size="sm" variant="outline" className="w-full text-[11px] h-7 border-red-500/50 text-red-700 hover:bg-red-50 bg-white/50 backdrop-blur-sm" onClick={() => onOpenDetail?.({ name: item.name, theme: 'Corpi' })}>Approfondimento: Corpi</Button>
+                                            )}
+                                            {(item.raw?.case === 1 || item.raw?.case === '1') && (
+                                                <Button size="sm" variant="outline" className="w-full text-[11px] h-7 border-green-500/50 text-green-700 hover:bg-green-50 bg-white/50 backdrop-blur-sm" onClick={() => onOpenDetail?.({ name: item.name, theme: 'Casa' })}>Approfondimento: Casa</Button>
+                                            )}
+                                            {(item.raw?.cose === 1 || item.raw?.cose === '1' || item.raw?.['cose '] === 1 || item.raw?.['cose '] === '1') && (
+                                                <Button size="sm" variant="outline" className="w-full text-[11px] h-7 border-blue-500/50 text-blue-700 hover:bg-blue-50 bg-white/50 backdrop-blur-sm" onClick={() => onOpenDetail?.({ name: item.name, theme: 'Cose' })}>Approfondimento: Cose</Button>
+                                            )}
+                                            {(item.raw?.amore === 1 || item.raw?.amore === '1') && (
+                                                <Button size="sm" variant="outline" className="w-full text-[11px] h-7 border-pink-500/50 text-pink-700 hover:bg-pink-50 bg-white/50 backdrop-blur-sm" onClick={() => onOpenDetail?.({ name: item.name, theme: 'Amore' })}>Approfondimento: Amore</Button>
+                                            )}
+                                        </div>
                                     </div>
                                 </Popup>
                             </Marker>

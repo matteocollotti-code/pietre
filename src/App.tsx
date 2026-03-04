@@ -1,5 +1,5 @@
 import { useState, useMemo, useEffect } from 'react';
-import { Filter } from 'lucide-react';
+import { Filter, Info } from 'lucide-react';
 import { useWebHaptics } from 'web-haptics/react';
 import data from '../data.json';
 import MapComponent from './MapComponent';
@@ -35,6 +35,7 @@ export default function App() {
     cose: false,
     amore: false
   });
+  const [activeDetail, setActiveDetail] = useState<{ name: string, theme: string } | null>(null);
   const [showSplash, setShowSplash] = useState(true);
   const [fadeSplash, setFadeSplash] = useState(false);
 
@@ -153,7 +154,6 @@ export default function App() {
               <span className="absolute left-[42px] top-[42px] h-px w-11 rotate-45 bg-muted-foreground/60" />
             </div>
             <p className="mb-2 text-sm uppercase tracking-[0.3em] text-muted-foreground animate-[splash-slide-up_0.5s_ease-out_0.3s_both]">le vie della parità</p>
-            <h2 className="text-2xl font-semibold text-foreground md:text-3xl animate-[splash-slide-up_0.5s_ease-out_0.45s_both]">Memoria che cammina</h2>
             <p className="mt-3 text-sm text-muted-foreground animate-[splash-slide-up_0.5s_ease-out_0.6s_both]">{appDescription}</p>
           </div>
         </div>
@@ -180,7 +180,7 @@ export default function App() {
               <span>Filtri</span>
             </Button>
           </SheetTrigger>
-          <SheetContent side="bottom" className="h-[50vh] bg-white/90 backdrop-blur-xl border-t border-white/50 rounded-t-2xl sm:max-w-none">
+          <SheetContent side="bottom" className="h-[50vh] bg-white/90 backdrop-blur-xl border-t border-white/50 rounded-t-2xl sm:max-w-none overflow-y-auto">
             <SheetHeader className="mb-4">
               <SheetTitle>Opzioni di Ricerca</SheetTitle>
             </SheetHeader>
@@ -208,9 +208,9 @@ export default function App() {
             </h1>
           </div>
           <p className="text-sm font-medium text-slate-600">
-            {appDescription}
-          </p>
-        </div>
+            itinerari al femminile a milano
+          </p >
+        </div >
 
         <div className="flex-1 overflow-y-auto pt-4">
           <FilterPanel
@@ -226,19 +226,70 @@ export default function App() {
             Mostrando {filteredMarkers.length} su {data.length}
           </p>
         </div>
-      </div>
+      </div >
 
       {/* MAPPA */}
-      <div className="flex-1 relative z-0">
+      < div className="flex-1 relative z-0" >
         {/* Badge Fluttuante Desktop */}
-        <div className="hidden md:block absolute top-4 right-4 z-[999]">
+        < div className="hidden md:block absolute top-4 right-4 z-[999]" >
           <Card className="px-5 py-2.5 shadow-xl border border-white/40 bg-white/70 backdrop-blur-xl rounded-full">
             <p className="text-sm font-bold text-slate-700"> {filteredMarkers.length} Pietre filtrate</p>
           </Card>
-        </div>
-        <MapComponent markers={filteredMarkers} routes={thematicRoutes} />
-      </div>
+        </div >
+        <MapComponent markers={filteredMarkers} routes={thematicRoutes} onOpenDetail={setActiveDetail} />
+      </div >
 
-    </div>
+      {/* Thematic Deep Dive Sheet */}
+      < Sheet open={!!activeDetail
+      } onOpenChange={(open) => { if (!open) setActiveDetail(null); }}>
+        <SheetContent side="bottom" className="h-[85vh] bg-white/95 backdrop-blur-2xl border-t border-white/50 rounded-t-3xl sm:max-w-3xl sm:mx-auto sm:px-10 overflow-hidden flex flex-col shadow-2xl z-[1000]">
+          <SheetHeader className="pb-6 border-b border-slate-200/50 flex flex-col space-y-2 mt-4">
+            <div className="flex items-center gap-3">
+              <div className="p-3 bg-purple-100 text-purple-700 rounded-full shadow-inner">
+                <Info className="w-6 h-6" />
+              </div>
+              <SheetTitle className="text-3xl font-extrabold bg-gradient-to-r from-orange-500 to-purple-600 bg-clip-text text-transparent">
+                Percorso: {activeDetail?.theme}
+              </SheetTitle>
+            </div>
+            <p className="text-base text-slate-500 font-semibold tracking-wide ml-[3.25rem]">Approfondimento dedicato a: <span className="text-slate-800">{activeDetail?.name}</span></p>
+          </SheetHeader>
+          <div className="flex-1 overflow-y-auto px-1 py-6 prose prose-slate text-justify">
+            <p className="text-lg leading-relaxed text-slate-700 font-medium mb-4">
+              Questa è una scheda di approfondimento tematico. Le pietre d'inciampo non sono solo luoghi di memoria statica, ma snodi di storie complesse che si intrecciano con i percorsi della città.
+            </p>
+            <p className="text-base leading-relaxed text-slate-600 mb-4">
+              Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
+              Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
+              Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.
+              Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+              Curabitur pretium tincidunt lacus. Nulla gravida orci a odio. Nullam varius, turpis et commodo pharetra,
+              est eros bibendum elit, nec luctus magna felis sollicitudin mauris. Integer in mauris eu nibh euismod gravida.
+              Duis ac tellus et risus vulputate vehicula. Donec lobortis risus a elit. Etiam tempor. Ut ullamcorper,
+              ligula eu tempor congue, eros est euismod turpis, id tincidunt sapien risus a quam. Maecenas fermentum consequat mi.
+              Donec fermentum. Pellentesque malesuada nulla a mi. Duis sapien sem, aliquet nec, commodo eget, consequat quis, neque.
+              Aliquam faucibus, elit ut dictum aliquet, felis nisl adipiscing sapien, sed malesuada diam lacus eget erat.
+            </p>
+            <p className="text-base leading-relaxed text-slate-600 mb-4">
+              Cras mollis scelerisque nunc. Nullam arcu. Aliquam consequat. Curabitur augue lorem, dapibus quis, laoreet et,
+              pretium ac, nisi. Aenean magna nisl, mollis quis, molestie eu, feugiat in, orci. In hac habitasse platea dictumst.
+              Fusce convallis, mauris imperdiet gravida bibendum, nisl turpis suscipit mauris, sed placerat ipsum urna sed risus.
+              Mauris quam enim, interdum sit amet, imperdiet in, fringilla sit amet, leo. Praesent in arcu. Praesent sodales
+              auctor neque. Pellentesque nec leo id orci tristique faucibus. Vivamus consequat pede id urna.
+              Suspendisse feugiat, pede et suscipit vestibulum, wisi lorem mattis lorem, quis vestibulum leo orci id nisi.
+            </p>
+            <p className="text-base leading-relaxed text-slate-600 mb-4">
+              Aliquam erat volutpat. Proin nonummy, wisi ac lobortis aliquam, justo odio gravida velit, et posuere neque quam sit amet magna.
+              Morbi a nulla. Suspendisse non wisi. Sed dapibus tempor leo. In wisi purus, accumsan quis, facilisis vel, luctus adipiscing,
+              orci. Pellentesque sed sem. Integer nonummy tristique nisi. Sed varius mauris a neque. Etiam sem pede, dictum id, congue in,
+              sodales id, est. Nam nisl wisi, blandit a, tristique ut, varius ut, felis. Nam pulvinar adipiscing nibh.
+              Mauris sed leo. Nulla cursus mauris imperdiet arcu. Proin id enim a metus consequat rutrum. In rhoncus ipsum imperdiet odio.
+              Duis ullamcorper. Duis a diam. Donec bibendum elit varius ipsum tempus laoreet. Etiam tristique. Aliquam id libero ullamcorper odio.
+            </p>
+          </div>
+        </SheetContent>
+      </Sheet >
+
+    </div >
   )
 }
