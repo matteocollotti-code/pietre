@@ -33,14 +33,19 @@ function loadMarkers(data) {
 
     data.forEach(item => {
         if (item.lat && item.lng) {
+            const isFemale = item.raw && item.raw.genere && item.raw.genere.toString().toLowerCase() === 'f';
+            const labelNato = isFemale ? 'Nata il:' : 'Nato il:';
+            const labelMorto = isFemale ? 'Morta il:' : 'Morto il:';
+            const labelLuogoMorte = isFemale ? 'Morta a:' : 'Morto a:';
+
             // Testo popup ricco di informazioni
             const popupContent = `
                 <div class="popup-content">
                     <h3 style="margin: 0 0 5px 0;">${item.name}</h3>
                     <p style="margin: 0 0 5px 0;"><strong>Indirizzo:</strong> ${item.address}</p>
-                    ${item.birthDate ? `<p style="margin: 0 0 5px 0;"><strong>Nato il:</strong> ${item.birthDate}</p>` : ''}
-                    ${item.deathDate ? `<p style="margin: 0 0 5px 0;"><strong>Morto il:</strong> ${item.deathDate}</p>` : ''}
-                    ${item.deathPlace ? `<p style="margin: 0 0 5px 0;"><strong>Luogo morte:</strong> ${item.deathPlace}</p>` : ''}
+                    ${item.birthDate ? `<p style="margin: 0 0 5px 0;"><strong>${labelNato}</strong> ${item.birthDate}</p>` : ''}
+                    ${item.deathDate ? `<p style="margin: 0 0 5px 0;"><strong>${labelMorto}</strong> ${item.deathDate}</p>` : ''}
+                    ${item.deathPlace ? `<p style="margin: 0 0 5px 0;"><strong>${labelLuogoMorte}</strong> ${item.deathPlace}</p>` : ''}
                     ${item.age ? `<p style="margin: 0 0 5px 0;"><strong>Età:</strong> ${item.age}</p>` : ''}
                 </div>
             `;
