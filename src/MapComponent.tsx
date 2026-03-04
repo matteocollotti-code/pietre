@@ -73,9 +73,22 @@ export default function MapComponent({ markers }: MapProps) {
                     chunkedLoading
                     spiderfyOnMaxZoom={true}
                     showCoverageOnHover={false}
-                    zoomToBoundsOnClick={true}
+                    zoomToBoundsOnClick={false}
                     maxClusterRadius={30}
                     iconCreateFunction={createClusterCustomIcon}
+                    eventHandlers={{
+                        clusterclick: (e: any) => {
+                            const cluster = e.layer;
+                            const map = cluster._map;
+                            // Esegue un 'flyToBounds' animato e più lento in caso di gruppi grandi
+                            // Controlla se al livello massimo deve spiderfiare
+                            if (map.getZoom() === map.getMaxZoom() || cluster.getChildCount() === cluster.getAllChildMarkers().length && map.getBoundsZoom(cluster.getBounds()) === map.getZoom()) {
+                                cluster.spiderfy();
+                            } else {
+                                map.flyToBounds(cluster.getBounds(), { padding: [50, 50], duration: 1.5 });
+                            }
+                        }
+                    }}
                 >
                     {markers.map((item, idx) => {
                         if (!item.lat || !item.lng) return null;
@@ -85,7 +98,20 @@ export default function MapComponent({ markers }: MapProps) {
                         const labelLuogoMorte = isFemale ? 'Morta a:' : 'Morto a:';
 
                         return (
-                            <Marker key={idx} position={[item.lat, item.lng]} icon={goldIcon}>
+                            <Marker
+                                key={idx}
+                                position={[item.lat, item.lng]}
+                                icon={goldIcon}
+                                eventHandlers={{
+                                    click: (e) => {
+                                        const map = e.target._map;
+                                        map.flyTo([item.lat, item.lng], 17, {
+                                            animate: true,
+                                            duration: 1.5
+                                        });
+                                    }
+                                }}
+                            >
                                 <Popup>
                                     <div className="font-sans">
                                         <h3 className="font-bold text-lg text-amber-600 border-b pb-1 mb-2">{item.name}</h3>

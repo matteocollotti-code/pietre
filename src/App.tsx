@@ -77,7 +77,7 @@ export default function App() {
       </div>
 
       {/* SIDEBAR DESKTOP (Visibile solo da schermi medi in su) */}
-      <div className="hidden md:flex flex-col w-80 bg-white shadow-xl z-10 relative h-full">
+      <div className="hidden md:flex flex-col w-80 min-w-80 bg-white shadow-[10px_0_15px_-3px_rgba(0,0,0,0.1)] z-50 relative h-full">
         <div className="p-6 border-b bg-gradient-to-br from-amber-50 to-white">
           <h1 className="text-3xl font-bold bg-gradient-to-r from-amber-500 to-yellow-600 bg-clip-text text-transparent leading-tight mb-2">
             Pietre <br />d'Inciampo
