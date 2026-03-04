@@ -3502,8 +3502,8 @@
     "deathDate": "06/08/1944",
     "deathPlace": "Auschwitz",
     "age": 63,
-    "lat": null,
-    "lng": null,
+    "lat": 45.4617062,
+    "lng": 9.178483,
     "raw": {
       "__EMPTY": "154",
       "Cognome e Nome": "Norsa Giorgio",

@@ -37,7 +37,7 @@ function cleanAddress(addr) {
     q = q.replace('donaetello', 'donatello'); // Errore di battitura nel file Excel
     q = q.replace('fatebene fratelli', 'fatebenefratelli'); // Scritto tutto attaccato
     q = q.replace('r. boscovich', 'ruggero boscovich'); // Nome completo
-    q = q.replace('l. necchi', 'ludovico necchi'); // Nome completo
+    q = q.replace('l. necchi', 'lodovico necchi'); // Nome completo con la 'o'
     q = q.replace('monterotondo', 'monte rotondo'); // Scritto staccato
 
     return q;
