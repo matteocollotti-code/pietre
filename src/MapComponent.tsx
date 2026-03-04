@@ -15,18 +15,18 @@ L.Icon.Default.mergeOptions({
 const milanCoords: [number, number] = [45.4642, 9.1900];
 const initialZoom = 13;
 
-const goldIcon = L.divIcon({
+const getGenderIcon = (isFemale: boolean) => L.divIcon({
     className: 'custom-div-icon',
-    html: "<div class='gold-stone-marker'></div>",
+    html: `<div class="w-3 h-3 rounded-sm shadow-md border border-white/50 backdrop-blur-sm ${isFemale ? 'bg-orange-500/90 shadow-orange-500/40' : 'bg-purple-600/90 shadow-purple-600/40'}"></div>`,
     iconSize: [12, 12],
     iconAnchor: [6, 6]
 });
 
 const createClusterCustomIcon = function (cluster: any) {
     return L.divIcon({
-        html: `<div style="background-color: #d4af37; border: 2px solid #7c5c02; color: black; border-radius: 50%; width: 24px; height: 24px; display: flex; align-items: center; justify-content: center; font-weight: bold;">${cluster.getChildCount()}</div>`,
+        html: `<div class="w-8 h-8 rounded-full border border-white/60 bg-white/70 backdrop-blur-md shadow-lg flex items-center justify-center font-bold text-slate-800 text-sm ring-2 ring-white/20">${cluster.getChildCount()}</div>`,
         className: 'custom-cluster-icon',
-        iconSize: L.point(24, 24)
+        iconSize: L.point(32, 32)
     });
 };
 
@@ -104,7 +104,7 @@ export default function MapComponent({ markers }: MapProps) {
                             <Marker
                                 key={idx}
                                 position={[item.lat, item.lng]}
-                                icon={goldIcon}
+                                icon={getGenderIcon(isFemale)}
                                 eventHandlers={{
                                     click: (e) => {
                                         const map = e.target._map;
@@ -115,9 +115,11 @@ export default function MapComponent({ markers }: MapProps) {
                                     }
                                 }}
                             >
-                                <Popup>
+                                <Popup className="glass-popup">
                                     <div className="font-sans">
-                                        <h3 className="font-bold text-lg text-amber-600 border-b pb-1 mb-2">{item.name}</h3>
+                                        <h3 className={`font-bold text-lg border-b border-slate-200 pb-1 mb-2 ${isFemale ? 'text-orange-600' : 'text-purple-600'}`}>
+                                            {item.name}
+                                        </h3>
                                         <p className="m-0 mb-1"><strong>Indirizzo:</strong> {item.address}</p>
                                         {item.birthDate && <p className="m-0 mb-1"><strong>{labelNato}</strong> {item.birthDate}</p>}
                                         {item.deathDate && <p className="m-0 mb-1"><strong>{labelMorto}</strong> {item.deathDate}</p>}

@@ -30,6 +30,7 @@
     --chart-5: 27 87% 67%;
     --radius: 0.5rem
   }
+
   .dark {
     --background: 0 0% 3.9%;
     --foreground: 0 0% 98%;
@@ -55,5 +56,33 @@
     --chart-3: 30 80% 55%;
     --chart-4: 280 65% 60%;
     --chart-5: 340 75% 55%
+  }
+}
+
+@layer components {
+
+  /* Leaflet Glassmorphism per Popups */
+  .glass-popup .leaflet-popup-content-wrapper {
+    background-color: rgba(255, 255, 255, 0.7) !important;
+    backdrop-filter: blur(12px) !important;
+    -webkit-backdrop-filter: blur(12px) !important;
+    border: 1px solid rgba(255, 255, 255, 0.5) !important;
+    box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1) !important;
+    border-radius: 1rem !important;
+  }
+
+  .glass-popup .leaflet-popup-tip {
+    background-color: rgba(255, 255, 255, 0.7) !important;
+    backdrop-filter: blur(12px) !important;
+    -webkit-backdrop-filter: blur(12px) !important;
+    border: 1px solid rgba(255, 255, 255, 0.5) !important;
+    border-top: none !important;
+    border-left: none !important;
+  }
+
+  /* Reset Leaflet Popup inner padding for cleaner look */
+  .glass-popup .leaflet-popup-content {
+    margin: 14px 18px !important;
+    line-height: 1.5 !important;
   }
 }
