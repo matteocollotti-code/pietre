@@ -1,4 +1,4 @@
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import { Filter } from 'lucide-react';
 import data from '../data.json';
 import MapComponent from './MapComponent';
@@ -15,6 +15,8 @@ import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 
 export default function App() {
+  const appDescription = 'Itinerari a Milano che attraversano le storie delle donne della Shoah.';
+
   // Parsing Age from data
   const validAges = data
     .map((d: any) => parseInt(d.age))
@@ -31,6 +33,18 @@ export default function App() {
     cose: false,
     amore: false
   });
+  const [showSplash, setShowSplash] = useState(true);
+  const [fadeSplash, setFadeSplash] = useState(false);
+
+  useEffect(() => {
+    const fadeTimeout = window.setTimeout(() => setFadeSplash(true), 1800);
+    const hideTimeout = window.setTimeout(() => setShowSplash(false), 2500);
+
+    return () => {
+      window.clearTimeout(fadeTimeout);
+      window.clearTimeout(hideTimeout);
+    };
+  }, []);
 
   // Derived filtered data
   const filteredMarkers = useMemo(() => {
@@ -124,13 +138,37 @@ export default function App() {
   }, [themes]);
 
   return (
-    <div className="flex flex-col md:flex-row h-screen w-full bg-slate-50 overflow-hidden font-sans">
+    <div className="relative flex flex-col md:flex-row h-screen w-full bg-slate-50 overflow-hidden font-sans">
+      {showSplash && (
+        <div className={`fixed inset-0 z-[2000] flex items-center justify-center bg-background/95 backdrop-blur-md transition-opacity duration-700 ${fadeSplash ? 'opacity-0' : 'opacity-100'}`}>
+          <div className="mx-6 flex max-w-md flex-col items-center text-center">
+            <div className="relative mb-6 h-20 w-20">
+              <span className="absolute inset-0 rounded-2xl border border-primary/20 animate-pulse" />
+              <span className="absolute left-2 top-2 h-4 w-4 rounded-sm bg-orange-500/80" />
+              <span className="absolute left-8 top-8 h-4 w-4 rounded-sm bg-purple-500/80 animate-pulse" />
+              <span className="absolute left-14 top-14 h-4 w-4 rounded-sm bg-orange-500/80" />
+              <span className="absolute left-[18px] top-[18px] h-px w-11 rotate-45 bg-muted-foreground/60" />
+              <span className="absolute left-[42px] top-[42px] h-px w-11 rotate-45 bg-muted-foreground/60" />
+            </div>
+            <p className="mb-2 text-sm uppercase tracking-[0.3em] text-muted-foreground">le vie della parità</p>
+            <h2 className="text-2xl font-semibold text-foreground md:text-3xl">Memoria che cammina</h2>
+            <p className="mt-3 text-sm text-muted-foreground">{appDescription}</p>
+          </div>
+        </div>
+      )}
 
       {/* MOBILE HEADER (Visibile solo su schermi piccoli) */}
       <div className="md:hidden flex items-center justify-between bg-white/70 backdrop-blur-xl border-b border-white/40 px-4 py-3 shadow-sm z-10 relative">
-        <div className="flex flex-col">
-          <h1 className="text-xl font-bold bg-gradient-to-r from-orange-500 to-purple-600 bg-clip-text text-transparent">Le vie della parità</h1>
-          <p className="text-xs text-slate-600 font-medium">Mappa di Milano</p>
+        <div className="flex items-center gap-3">
+          <div className="relative h-10 w-10 rounded-xl border border-slate-200/80 bg-white/70">
+            <span className="absolute left-1.5 top-1.5 h-2.5 w-2.5 rounded-sm bg-orange-500/80" />
+            <span className="absolute left-3.5 top-3.5 h-2.5 w-2.5 rounded-sm bg-purple-500/80" />
+            <span className="absolute left-5.5 top-5.5 h-2.5 w-2.5 rounded-sm bg-orange-500/80" />
+          </div>
+          <div className="flex flex-col">
+            <h1 className="text-xl font-bold bg-gradient-to-r from-orange-500 to-purple-600 bg-clip-text text-transparent">le vie della parità</h1>
+            <p className="text-xs text-slate-600 font-medium">Itinerari di memoria a Milano</p>
+          </div>
         </div>
 
         <Sheet>
@@ -157,11 +195,18 @@ export default function App() {
       {/* SIDEBAR DESKTOP (Visibile solo da schermi medi in su) */}
       <div className="hidden md:flex flex-col w-80 min-w-80 bg-white/70 backdrop-blur-xl border-r border-white/50 shadow-[10px_0_30px_-5px_rgba(0,0,0,0.1)] z-50 relative h-full">
         <div className="p-6 border-b border-white/40 bg-gradient-to-br from-white/40 to-transparent">
-          <h1 className="text-3xl font-bold bg-gradient-to-r from-orange-500 to-purple-600 bg-clip-text text-transparent leading-tight mb-2">
-            Le vie <br />della parità
-          </h1>
+          <div className="mb-3 flex items-center gap-3">
+            <div className="relative h-12 w-12 rounded-xl border border-slate-200/80 bg-white/70">
+              <span className="absolute left-2 top-2 h-3 w-3 rounded-sm bg-orange-500/80" />
+              <span className="absolute left-4.5 top-4.5 h-3 w-3 rounded-sm bg-purple-500/80" />
+              <span className="absolute left-7 top-7 h-3 w-3 rounded-sm bg-orange-500/80" />
+            </div>
+            <h1 className="text-3xl font-bold bg-gradient-to-r from-orange-500 to-purple-600 bg-clip-text text-transparent leading-tight">
+              le vie della parità
+            </h1>
+          </div>
           <p className="text-sm font-medium text-slate-600">
-            Esplora le {data.length} pietre posate nella città di Milano.
+            {appDescription}
           </p>
         </div>
 
