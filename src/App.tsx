@@ -2,6 +2,7 @@ import { useState, useMemo, useEffect } from 'react';
 import { Filter, Info } from 'lucide-react';
 import { useWebHaptics } from 'web-haptics/react';
 import data from '../data.json';
+import precomputedRoutes from './routes.json';
 import MapComponent from './MapComponent';
 import FilterPanel from './FilterPanel';
 import type { GenderFilter, ThemesState } from './FilterPanel';
@@ -90,52 +91,20 @@ export default function App() {
 
   // Build thematic routes if a theme is active
   const thematicRoutes = useMemo(() => {
-    const CENTRALE: [number, number] = [45.4861, 9.2036];
-    const SAN_VITTORE: [number, number] = [45.4619, 9.1656];
-
-    const buildRoute = (points: any[]) => {
-      if (points.length === 0) return [];
-      let unvisited = [...points];
-      let current = CENTRALE;
-      const route: [number, number][] = [CENTRALE];
-
-      while (unvisited.length > 0) {
-        let closestIdx = 0;
-        let minDist = Infinity;
-        for (let i = 0; i < unvisited.length; i++) {
-          const pt = unvisited[i];
-          // approximate distance ignoring spherical geometry since Milan is small
-          const dist = Math.pow(pt.lat - current[0], 2) + Math.pow(pt.lng - current[1], 2);
-          if (dist < minDist) {
-            minDist = dist;
-            closestIdx = i;
-          }
-        }
-        current = [unvisited[closestIdx].lat, unvisited[closestIdx].lng];
-        route.push(current);
-        unvisited.splice(closestIdx, 1);
-      }
-
-      route.push(SAN_VITTORE);
-      return route;
-    };
-
     const routes: { id: string, color: string, points: [number, number][] }[] = [];
-    if (themes.corpi) {
-      const pts = data.filter((item: any) => item.lat && item.lng && (item.raw?.corpi === 1 || item.raw?.corpi === '1'));
-      routes.push({ id: 'corpi', color: '#dc2626', points: buildRoute(pts) }); // red-600
+    const r = precomputedRoutes as unknown as Record<string, [number, number][]>;
+
+    if (themes.corpi && r.corpi) {
+      routes.push({ id: 'corpi', color: '#dc2626', points: r.corpi }); // red-600
     }
-    if (themes.case) {
-      const pts = data.filter((item: any) => item.lat && item.lng && (item.raw?.case === 1 || item.raw?.case === '1'));
-      routes.push({ id: 'case', color: '#16a34a', points: buildRoute(pts) }); // green-600
+    if (themes.case && r.case) {
+      routes.push({ id: 'case', color: '#16a34a', points: r.case }); // green-600
     }
-    if (themes.cose) {
-      const pts = data.filter((item: any) => item.lat && item.lng && (item.raw?.cose === 1 || item.raw?.cose === '1' || item.raw?.['cose '] === 1 || item.raw?.['cose '] === '1'));
-      routes.push({ id: 'cose', color: '#2563eb', points: buildRoute(pts) }); // blue-600
+    if (themes.cose && r.cose) {
+      routes.push({ id: 'cose', color: '#2563eb', points: r.cose }); // blue-600
     }
-    if (themes.amore) {
-      const pts = data.filter((item: any) => item.lat && item.lng && (item.raw?.amore === 1 || item.raw?.amore === '1'));
-      routes.push({ id: 'amore', color: '#db2777', points: buildRoute(pts) }); // pink-600
+    if (themes.amore && r.amore) {
+      routes.push({ id: 'amore', color: '#db2777', points: r.amore }); // pink-600
     }
     return routes;
   }, [themes]);

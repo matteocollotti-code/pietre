@@ -5916,5 +5916,43 @@
       "cose ": 0,
       "amore": 0
     }
+  },
+  {
+    "name": "Finzi Edgardo",
+    "address": "Via Mario Pagano 36",
+    "birthDate": "27/01/1889",
+    "deathDate": "06/08/1944",
+    "deathPlace": "Auschwitz",
+    "age": 56,
+    "lat": 45.4703195,
+    "lng": 9.1639741,
+    "raw": {
+      "Cognome e Nome": "Finzi Edgardo",
+      "Indirizzo pietra": "Via Mario Pagano 36",
+      "genere": "m",
+      "corpi": 0,
+      "case": 0,
+      "cose ": 0,
+      "amore": 0
+    }
+  },
+  {
+    "name": "Levi Giuseppe",
+    "address": "via Ariosto 3",
+    "birthDate": "25/09/1872",
+    "deathDate": "16215",
+    "deathPlace": "Auschwitz",
+    "age": null,
+    "lat": 45.442927,
+    "lng": 9.0955262,
+    "raw": {
+      "Cognome e Nome": "Levi Giuseppe",
+      "Indirizzo pietra": "via Ariosto 3",
+      "genere": "m",
+      "corpi": 0,
+      "case": 0,
+      "cose ": 0,
+      "amore": 0
+    }
   }
 ]
