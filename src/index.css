@@ -85,4 +85,11 @@
     margin: 14px 18px !important;
     line-height: 1.5 !important;
   }
+
+  /* Blend 3D generated icons into the map */
+  .landmark-icon {
+    mix-blend-mode: multiply;
+    opacity: 0.95;
+    filter: drop-shadow(0 10px 15px rgba(0, 0, 0, 0.2));
+  }
 }
