@@ -80,12 +80,15 @@ export default function MapComponent({ markers }: MapProps) {
                         clusterclick: (e: any) => {
                             const cluster = e.layer;
                             const map = cluster._map;
-                            // Esegue un 'flyToBounds' animato e più lento in caso di gruppi grandi
-                            // Controlla se al livello massimo deve spiderfiare
-                            if (map.getZoom() === map.getMaxZoom() || cluster.getChildCount() === cluster.getAllChildMarkers().length && map.getBoundsZoom(cluster.getBounds()) === map.getZoom()) {
-                                cluster.spiderfy();
+                            const bounds = cluster.getBounds();
+                            const destZoom = map.getBoundsZoom(bounds);
+
+                            // Se possiamo zoomare ancora per separare il cluster, facciamo flyToBounds
+                            if (destZoom > map.getZoom() && map.getZoom() < map.getMaxZoom()) {
+                                map.flyToBounds(bounds, { padding: [50, 50], duration: 1.5 });
                             } else {
-                                map.flyToBounds(cluster.getBounds(), { padding: [50, 50], duration: 1.5 });
+                                // Siamo già allo zoom necessario o al livello massimo, dobbiamo espandere i punti (spiderfy)
+                                cluster.spiderfy();
                             }
                         }
                     }}
