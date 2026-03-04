@@ -3,7 +3,7 @@ import { Filter } from 'lucide-react';
 import data from '../data.json';
 import MapComponent from './MapComponent';
 import FilterPanel from './FilterPanel';
-import type { GenderFilter } from './FilterPanel';
+import type { GenderFilter, ThemesState } from './FilterPanel';
 import {
   Sheet,
   SheetContent,
@@ -25,6 +25,12 @@ export default function App() {
 
   const [gender, setGender] = useState<GenderFilter>('all');
   const [ageRange, setAgeRange] = useState<[number, number]>([minAge, maxAge]);
+  const [themes, setThemes] = useState<ThemesState>({
+    corpi: false,
+    case: false,
+    cose: false,
+    amore: false
+  });
 
   // Derived filtered data
   const filteredMarkers = useMemo(() => {
@@ -42,9 +48,28 @@ export default function App() {
         if (itemAge < ageRange[0] || itemAge > ageRange[1]) return false;
       }
 
+      // Filter Themes
+      const { corpi, case: caseTheme, cose, amore } = themes;
+      const isAnyThemeActive = corpi || caseTheme || cose || amore;
+
+      if (isAnyThemeActive) {
+        const hasCorpi = item.raw?.corpi === 1 || item.raw?.corpi === '1';
+        const hasCase = item.raw?.case === 1 || item.raw?.case === '1';
+        const hasCose = item.raw?.cose === 1 || item.raw?.cose === '1' || item.raw?.['cose '] === 1 || item.raw?.['cose '] === '1';
+        const hasAmore = item.raw?.amore === 1 || item.raw?.amore === '1';
+
+        const matchesTheme =
+          (corpi && hasCorpi) ||
+          (caseTheme && hasCase) ||
+          (cose && hasCose) ||
+          (amore && hasAmore);
+
+        if (!matchesTheme) return false;
+      }
+
       return true;
     });
-  }, [gender, ageRange]);
+  }, [gender, ageRange, themes]);
 
   return (
     <div className="flex flex-col md:flex-row h-screen w-full bg-slate-50 overflow-hidden font-sans">
@@ -52,7 +77,7 @@ export default function App() {
       {/* MOBILE HEADER (Visibile solo su schermi piccoli) */}
       <div className="md:hidden flex items-center justify-between bg-white/70 backdrop-blur-xl border-b border-white/40 px-4 py-3 shadow-sm z-10 relative">
         <div className="flex flex-col">
-          <h1 className="text-xl font-bold bg-gradient-to-r from-purple-600 to-orange-500 bg-clip-text text-transparent">Le vie della parità</h1>
+          <h1 className="text-xl font-bold bg-gradient-to-r from-orange-500 to-purple-600 bg-clip-text text-transparent">Le vie della parità</h1>
           <p className="text-xs text-slate-600 font-medium">Mappa di Milano</p>
         </div>
 
@@ -71,6 +96,7 @@ export default function App() {
               gender={gender} setGender={setGender}
               ageRange={ageRange} setAgeRange={setAgeRange}
               minAge={minAge} maxAge={maxAge}
+              themes={themes} setThemes={setThemes}
             />
           </SheetContent>
         </Sheet>
@@ -79,7 +105,7 @@ export default function App() {
       {/* SIDEBAR DESKTOP (Visibile solo da schermi medi in su) */}
       <div className="hidden md:flex flex-col w-80 min-w-80 bg-white/70 backdrop-blur-xl border-r border-white/50 shadow-[10px_0_30px_-5px_rgba(0,0,0,0.1)] z-50 relative h-full">
         <div className="p-6 border-b border-white/40 bg-gradient-to-br from-white/40 to-transparent">
-          <h1 className="text-3xl font-bold bg-gradient-to-r from-purple-600 to-orange-500 bg-clip-text text-transparent leading-tight mb-2">
+          <h1 className="text-3xl font-bold bg-gradient-to-r from-orange-500 to-purple-600 bg-clip-text text-transparent leading-tight mb-2">
             Le vie <br />della parità
           </h1>
           <p className="text-sm font-medium text-slate-600">
@@ -92,6 +118,7 @@ export default function App() {
             gender={gender} setGender={setGender}
             ageRange={ageRange} setAgeRange={setAgeRange}
             minAge={minAge} maxAge={maxAge}
+            themes={themes} setThemes={setThemes}
           />
         </div>
 

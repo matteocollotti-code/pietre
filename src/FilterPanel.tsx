@@ -1,8 +1,10 @@
 import { Slider } from '@/components/ui/slider';
 import { Label } from '@/components/ui/label';
 import { Button } from '@/components/ui/button';
+import { Switch } from '@/components/ui/switch';
 
 export type GenderFilter = 'all' | 'm' | 'f';
+export type ThemesState = { corpi: boolean; case: boolean; cose: boolean; amore: boolean; };
 
 interface FilterPanelProps {
     gender: GenderFilter;
@@ -11,10 +13,12 @@ interface FilterPanelProps {
     setAgeRange: (r: [number, number]) => void;
     minAge: number;
     maxAge: number;
+    themes: ThemesState;
+    setThemes: (t: ThemesState) => void;
 }
 
 export default function FilterPanel({
-    gender, setGender, ageRange, setAgeRange, minAge, maxAge
+    gender, setGender, ageRange, setAgeRange, minAge, maxAge, themes, setThemes
 }: FilterPanelProps) {
     return (
         <div className="flex flex-col gap-6 p-4">
@@ -66,6 +70,28 @@ export default function FilterPanel({
                 <div className="flex justify-between text-xs text-slate-400 font-medium">
                     <span>{minAge} anni</span>
                     <span>{maxAge} anni</span>
+                </div>
+            </div>
+
+            <div className="space-y-4 pt-2 border-t border-slate-200/50">
+                <Label className="text-sm font-semibold text-slate-700 uppercase tracking-wide">Percorsi Tematici</Label>
+                <div className="flex flex-col gap-3">
+                    <div className="flex items-center justify-between bg-white/50 p-2 py-3 rounded-lg backdrop-blur-sm border border-slate-200 shadow-sm">
+                        <Label htmlFor="corpi" className="cursor-pointer font-medium text-slate-700">Corpi</Label>
+                        <Switch id="corpi" checked={themes.corpi} onCheckedChange={(c) => setThemes({ ...themes, corpi: c })} />
+                    </div>
+                    <div className="flex items-center justify-between bg-white/50 p-2 py-3 rounded-lg backdrop-blur-sm border border-slate-200 shadow-sm">
+                        <Label htmlFor="case" className="cursor-pointer font-medium text-slate-700">Casa</Label>
+                        <Switch id="case" checked={themes.case} onCheckedChange={(c) => setThemes({ ...themes, case: c })} />
+                    </div>
+                    <div className="flex items-center justify-between bg-white/50 p-2 py-3 rounded-lg backdrop-blur-sm border border-slate-200 shadow-sm">
+                        <Label htmlFor="cose" className="cursor-pointer font-medium text-slate-700">Cose</Label>
+                        <Switch id="cose" checked={themes.cose} onCheckedChange={(c) => setThemes({ ...themes, cose: c })} />
+                    </div>
+                    <div className="flex items-center justify-between bg-white/50 p-2 py-3 rounded-lg backdrop-blur-sm border border-slate-200 shadow-sm">
+                        <Label htmlFor="amore" className="cursor-pointer font-medium text-slate-700">Amore</Label>
+                        <Switch id="amore" checked={themes.amore} onCheckedChange={(c) => setThemes({ ...themes, amore: c })} />
+                    </div>
                 </div>
             </div>
         </div>

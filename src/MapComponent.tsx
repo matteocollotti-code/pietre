@@ -73,25 +73,9 @@ export default function MapComponent({ markers }: MapProps) {
                     chunkedLoading
                     spiderfyOnMaxZoom={true}
                     showCoverageOnHover={false}
-                    zoomToBoundsOnClick={false}
+                    zoomToBoundsOnClick={true}
                     maxClusterRadius={1}
                     iconCreateFunction={createClusterCustomIcon}
-                    eventHandlers={{
-                        clusterclick: (e: any) => {
-                            const cluster = e.layer;
-                            const map = cluster._map;
-                            const bounds = cluster.getBounds();
-                            const destZoom = map.getBoundsZoom(bounds);
-
-                            // Se possiamo zoomare ancora per separare il cluster, facciamo flyToBounds
-                            if (destZoom > map.getZoom() && map.getZoom() < map.getMaxZoom()) {
-                                map.flyToBounds(bounds, { padding: [50, 50], duration: 1.5 });
-                            } else {
-                                // Siamo già allo zoom necessario o al livello massimo, dobbiamo espandere i punti (spiderfy)
-                                cluster.spiderfy();
-                            }
-                        }
-                    }}
                 >
                     {markers.map((item, idx) => {
                         if (!item.lat || !item.lng) return null;
@@ -105,15 +89,6 @@ export default function MapComponent({ markers }: MapProps) {
                                 key={idx}
                                 position={[item.lat, item.lng]}
                                 icon={getGenderIcon(isFemale)}
-                                eventHandlers={{
-                                    click: (e) => {
-                                        const map = e.target._map;
-                                        map.flyTo([item.lat, item.lng], 17, {
-                                            animate: true,
-                                            duration: 1.5
-                                        });
-                                    }
-                                }}
                             >
                                 <Popup className="glass-popup">
                                     <div className="font-sans">
