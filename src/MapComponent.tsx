@@ -160,16 +160,16 @@ export default function MapComponent({ markers, routes = [], onOpenDetail }: Map
 
                                         <div className="mt-3 flex flex-col gap-1.5">
                                             {(item.raw?.corpi === 1 || item.raw?.corpi === '1') && (
-                                                <Button size="sm" variant="outline" className="w-full text-[11px] h-7 border-red-500/50 text-red-700 hover:bg-red-50 bg-white/50 backdrop-blur-sm" onClick={(e) => { e.stopPropagation(); onOpenDetail?.({ name: item.name, theme: 'Corpi' }) }}>Approfondimento: Corpi</Button>
+                                                <Button size="sm" variant="outline" className="w-full text-[11px] h-7 border-red-500/50 text-red-700 hover:bg-red-50 bg-white/50 backdrop-blur-sm" onClick={(e) => { e.stopPropagation(); onOpenDetail?.({ name: item.name, theme: 'Corpi' }) }}>Tema Corpi</Button>
                                             )}
                                             {(item.raw?.case === 1 || item.raw?.case === '1') && (
-                                                <Button size="sm" variant="outline" className="w-full text-[11px] h-7 border-green-500/50 text-green-700 hover:bg-green-50 bg-white/50 backdrop-blur-sm" onClick={(e) => { e.stopPropagation(); onOpenDetail?.({ name: item.name, theme: 'Casa' }) }}>Approfondimento: Casa</Button>
+                                                <Button size="sm" variant="outline" className="w-full text-[11px] h-7 border-green-500/50 text-green-700 hover:bg-green-50 bg-white/50 backdrop-blur-sm" onClick={(e) => { e.stopPropagation(); onOpenDetail?.({ name: item.name, theme: 'Casa' }) }}>Tema Casa</Button>
                                             )}
                                             {(item.raw?.cose === 1 || item.raw?.cose === '1' || item.raw?.['cose '] === 1 || item.raw?.['cose '] === '1') && (
-                                                <Button size="sm" variant="outline" className="w-full text-[11px] h-7 border-blue-500/50 text-blue-700 hover:bg-blue-50 bg-white/50 backdrop-blur-sm" onClick={(e) => { e.stopPropagation(); onOpenDetail?.({ name: item.name, theme: 'Cose' }) }}>Approfondimento: Cose</Button>
+                                                <Button size="sm" variant="outline" className="w-full text-[11px] h-7 border-blue-500/50 text-blue-700 hover:bg-blue-50 bg-white/50 backdrop-blur-sm" onClick={(e) => { e.stopPropagation(); onOpenDetail?.({ name: item.name, theme: 'Cose' }) }}>Tema Cose</Button>
                                             )}
                                             {(item.raw?.amore === 1 || item.raw?.amore === '1') && (
-                                                <Button size="sm" variant="outline" className="w-full text-[11px] h-7 border-pink-500/50 text-pink-700 hover:bg-pink-50 bg-white/50 backdrop-blur-sm" onClick={(e) => { e.stopPropagation(); onOpenDetail?.({ name: item.name, theme: 'Amore' }) }}>Approfondimento: Amore</Button>
+                                                <Button size="sm" variant="outline" className="w-full text-[11px] h-7 border-pink-500/50 text-pink-700 hover:bg-pink-50 bg-white/50 backdrop-blur-sm" onClick={(e) => { e.stopPropagation(); onOpenDetail?.({ name: item.name, theme: 'Amore' }) }}>Tema Amore</Button>
                                             )}
                                         </div>
                                     </div>

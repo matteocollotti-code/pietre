@@ -11,11 +11,7 @@ async function fetchRoute(name, points) {
     // Check if points is empty
     if (points.length === 0) return null;
 
-    const coords = [
-        CENTRALE,
-        ...points.map(p => [p.lng, p.lat]),
-        SAN_VITTORE
-    ];
+    const coords = points.map(p => [p.lng, p.lat]);
 
     const coordsStr = coords.map(c => `${c[0]},${c[1]}`).join(';');
     // We use driving because the public foot profile is often slower or restricted
