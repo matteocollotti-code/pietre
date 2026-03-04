@@ -4,6 +4,8 @@ import data from '../data.json';
 import MapComponent from './MapComponent';
 import FilterPanel from './FilterPanel';
 import type { GenderFilter } from './FilterPanel';
+import SplashScreen from './SplashScreen';
+import AppHeader from './AppHeader';
 import {
   Sheet,
   SheetContent,
@@ -15,6 +17,7 @@ import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 
 export default function App() {
+  const [splashDismissed, setSplashDismissed] = useState(false);
   // Parsing Age from data
   const validAges = data
     .map((d: any) => parseInt(d.age))
@@ -47,7 +50,12 @@ export default function App() {
   }, [gender, ageRange]);
 
   return (
-    <div className="flex flex-col md:flex-row h-screen w-full bg-slate-50 overflow-hidden font-sans">
+    <>
+      {!splashDismissed && (
+        <SplashScreen onDismiss={() => setSplashDismissed(true)} />
+      )}
+
+      <div className={`flex flex-col md:flex-row h-screen w-full bg-slate-50 overflow-hidden font-sans transition-opacity duration-700 ${splashDismissed ? 'opacity-100' : 'opacity-0'}`}>
 
       {/* MOBILE HEADER (Visibile solo su schermi piccoli) */}
       <div className="md:hidden flex items-center justify-between bg-white border-b px-4 py-3 shadow-sm z-10 relative">
@@ -104,6 +112,9 @@ export default function App() {
 
       {/* MAPPA */}
       <div className="flex-1 relative z-0">
+        {/* App header (top-left, always visible after splash) */}
+        {splashDismissed && <AppHeader />}
+
         {/* Badge Fluttuante Desktop */}
         <div className="hidden md:block absolute top-4 right-4 z-[999]">
           <Card className="px-4 py-2 shadow-lg border-none bg-white/90 backdrop-blur-md">
@@ -114,5 +125,6 @@ export default function App() {
       </div>
 
     </div>
+    </>
   )
 }
