@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import { MapContainer, TileLayer, Marker, Popup, useMap } from 'react-leaflet';
+import { MapContainer, TileLayer, Marker, Popup, useMap, Polyline } from 'react-leaflet';
 import MarkerClusterGroup from 'react-leaflet-cluster';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
@@ -37,9 +37,55 @@ function MilanBoundary() {
             .then(res => res.json())
             .then(data => {
                 if (data && data.length > 0) {
-                    L.geoJSON(data[0].geojson, {
+                    const geojson = data[0].geojson;
+
+                    // 1. Draw the classic boundary (Stroke only)
+                    L.geoJSON(geojson, {
                         style: {
-                            color: '#c0392b', weight: 2, opacity: 0.8, fillColor: '#c0392b', fillOpacity: 0.05
+                            color: '#c0392b',
+                            weight: 2,
+                            opacity: 0.8,
+                            fillOpacity: 0,
+                            interactive: false
+                        }
+                    }).addTo(map);
+
+                    // 2. Create the inverted polygon to fade the outside world
+                    let holes: any[] = [];
+                    if (geojson.type === 'Polygon') {
+                        holes = geojson.coordinates;
+                    } else if (geojson.type === 'MultiPolygon') {
+                        geojson.coordinates.forEach((polygonRings: any) => {
+                            holes.push(...polygonRings);
+                        });
+                    }
+
+                    const worldOuterRing = [
+                        [180, 90],
+                        [-180, 90],
+                        [-180, -90],
+                        [180, -90],
+                        [180, 90]
+                    ];
+
+                    const invertedPolygon = {
+                        type: "Feature",
+                        geometry: {
+                            type: "Polygon",
+                            coordinates: [
+                                worldOuterRing,
+                                ...holes
+                            ]
+                        }
+                    };
+
+                    L.geoJSON(invertedPolygon as any, {
+                        style: {
+                            color: 'transparent',
+                            weight: 0,
+                            fillColor: '#f8fafc', // slate-50 color to match app background
+                            fillOpacity: 0.85,
+                            interactive: false
                         }
                     }).addTo(map);
                 }
@@ -50,9 +96,10 @@ function MilanBoundary() {
 
 interface MapProps {
     markers: any[];
+    routes?: { id: string, color: string, points: [number, number][] }[];
 }
 
-export default function MapComponent({ markers }: MapProps) {
+export default function MapComponent({ markers, routes = [] }: MapProps) {
     return (
         <div className="w-full h-full relative z-0">
             <MapContainer
@@ -68,6 +115,14 @@ export default function MapComponent({ markers }: MapProps) {
                     maxZoom={20}
                 />
                 <MilanBoundary />
+
+                {routes.map(r => (
+                    <Polyline
+                        key={r.id}
+                        positions={r.points}
+                        pathOptions={{ color: r.color, weight: 3, opacity: 0.8 }}
+                    />
+                ))}
 
                 <MarkerClusterGroup
                     chunkedLoading
