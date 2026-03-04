@@ -108,6 +108,8 @@ export default function MapComponent({ markers, routes = [], onOpenDetail }: Map
                 center={milanCoords}
                 zoom={initialZoom}
                 zoomControl={false}
+                zoomSnap={0.5}
+                zoomAnimation={true}
                 className="w-full h-full"
             >
                 <TileLayer
@@ -128,10 +130,12 @@ export default function MapComponent({ markers, routes = [], onOpenDetail }: Map
 
                 <MarkerClusterGroup
                     chunkedLoading
+                    animate={true}
                     spiderfyOnMaxZoom={true}
                     showCoverageOnHover={false}
                     zoomToBoundsOnClick={true}
                     maxClusterRadius={1}
+                    spiderfyDistanceMultiplier={1.5}
                     iconCreateFunction={createClusterCustomIcon}
                 >
                     {markers.map((item, idx) => {

@@ -221,11 +221,11 @@ export default function App() {
                 Percorso: {activeDetail?.theme}
               </SheetTitle>
             </div>
-            <p className="text-base text-slate-500 font-semibold tracking-wide ml-[3.25rem]">Approfondimento dedicato a: <span className="text-slate-800">{activeDetail?.name}</span></p>
+            <p className="text-base text-slate-500 font-semibold tracking-wide ml-[3.25rem]">Tema dedicato a: <span className="text-slate-800">{activeDetail?.name}</span></p>
           </SheetHeader>
           <div className="flex-1 overflow-y-auto px-1 py-6 prose prose-slate text-justify">
             <p className="text-lg leading-relaxed text-slate-700 font-medium mb-4">
-              Questa è una scheda di approfondimento tematico. Le pietre d'inciampo non sono solo luoghi di memoria statica, ma snodi di storie complesse che si intrecciano con i percorsi della città.
+              Questa è una scheda tematica. Le pietre d'inciampo non sono solo luoghi di memoria statica, ma snodi di storie complesse che si intrecciano con i percorsi della città.
             </p>
             <p className="text-base leading-relaxed text-slate-600 mb-4">
               Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
