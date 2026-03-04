@@ -1,3 +1,4 @@
+import { useWebHaptics } from 'web-haptics/react';
 import { Slider } from '@/components/ui/slider';
 import { Label } from '@/components/ui/label';
 import { Button } from '@/components/ui/button';
@@ -20,6 +21,7 @@ interface FilterPanelProps {
 export default function FilterPanel({
     gender, setGender, ageRange, setAgeRange, minAge, maxAge, themes, setThemes
 }: FilterPanelProps) {
+    const { trigger } = useWebHaptics();
     return (
         <div className="flex flex-col gap-6 p-4">
             <div className="space-y-3">
@@ -28,7 +30,7 @@ export default function FilterPanel({
                     <Button
                         variant={gender === 'all' ? 'default' : 'outline'}
                         className={`flex-1 ${gender === 'all' ? 'bg-slate-800 text-white' : 'bg-white/50 border-slate-200 backdrop-blur-sm'}`}
-                        onClick={() => setGender('all')}
+                        onClick={() => { trigger('nudge'); setGender('all'); }}
                     >
                         Tutti
                     </Button>
@@ -36,7 +38,7 @@ export default function FilterPanel({
                         variant={gender === 'm' ? 'default' : 'outline'}
                         className="flex-1 bg-purple-50/50 backdrop-blur-sm text-purple-700 border-purple-200 hover:bg-purple-100 data-[state=active]:bg-purple-600 data-[state=active]:text-white"
                         data-state={gender === 'm' ? 'active' : 'inactive'}
-                        onClick={() => setGender('m')}
+                        onClick={() => { trigger('nudge'); setGender('m'); }}
                     >
                         Uomo
                     </Button>
@@ -44,7 +46,7 @@ export default function FilterPanel({
                         variant={gender === 'f' ? 'default' : 'outline'}
                         className="flex-1 bg-orange-50/50 backdrop-blur-sm text-orange-700 border-orange-200 hover:bg-orange-100 data-[state=active]:bg-orange-500 data-[state=active]:text-white"
                         data-state={gender === 'f' ? 'active' : 'inactive'}
-                        onClick={() => setGender('f')}
+                        onClick={() => { trigger('nudge'); setGender('f'); }}
                     >
                         Donna
                     </Button>
@@ -78,19 +80,19 @@ export default function FilterPanel({
                 <div className="flex flex-col gap-3">
                     <div className="flex items-center justify-between bg-white/50 p-2 py-3 rounded-lg backdrop-blur-sm border border-slate-200 shadow-sm">
                         <Label htmlFor="corpi" className="cursor-pointer font-medium text-slate-700">Corpi</Label>
-                        <Switch id="corpi" checked={themes.corpi} onCheckedChange={(c) => setThemes({ ...themes, corpi: c })} />
+                        <Switch id="corpi" checked={themes.corpi} onCheckedChange={(c) => { trigger('nudge'); setThemes({ ...themes, corpi: c }); }} />
                     </div>
                     <div className="flex items-center justify-between bg-white/50 p-2 py-3 rounded-lg backdrop-blur-sm border border-slate-200 shadow-sm">
                         <Label htmlFor="case" className="cursor-pointer font-medium text-slate-700">Casa</Label>
-                        <Switch id="case" checked={themes.case} onCheckedChange={(c) => setThemes({ ...themes, case: c })} />
+                        <Switch id="case" checked={themes.case} onCheckedChange={(c) => { trigger('nudge'); setThemes({ ...themes, case: c }); }} />
                     </div>
                     <div className="flex items-center justify-between bg-white/50 p-2 py-3 rounded-lg backdrop-blur-sm border border-slate-200 shadow-sm">
                         <Label htmlFor="cose" className="cursor-pointer font-medium text-slate-700">Cose</Label>
-                        <Switch id="cose" checked={themes.cose} onCheckedChange={(c) => setThemes({ ...themes, cose: c })} />
+                        <Switch id="cose" checked={themes.cose} onCheckedChange={(c) => { trigger('nudge'); setThemes({ ...themes, cose: c }); }} />
                     </div>
                     <div className="flex items-center justify-between bg-white/50 p-2 py-3 rounded-lg backdrop-blur-sm border border-slate-200 shadow-sm">
                         <Label htmlFor="amore" className="cursor-pointer font-medium text-slate-700">Amore</Label>
-                        <Switch id="amore" checked={themes.amore} onCheckedChange={(c) => setThemes({ ...themes, amore: c })} />
+                        <Switch id="amore" checked={themes.amore} onCheckedChange={(c) => { trigger('nudge'); setThemes({ ...themes, amore: c }); }} />
                     </div>
                 </div>
             </div>

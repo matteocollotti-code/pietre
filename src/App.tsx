@@ -1,5 +1,6 @@
 import { useState, useMemo, useEffect } from 'react';
 import { Filter } from 'lucide-react';
+import { useWebHaptics } from 'web-haptics/react';
 import data from '../data.json';
 import MapComponent from './MapComponent';
 import FilterPanel from './FilterPanel';
@@ -16,6 +17,7 @@ import { Card } from '@/components/ui/card';
 
 export default function App() {
   const appDescription = 'Itinerari a Milano che attraversano le storie delle donne della Shoah.';
+  const { trigger } = useWebHaptics();
 
   // Parsing Age from data
   const validAges = data
@@ -173,7 +175,7 @@ export default function App() {
 
         <Sheet>
           <SheetTrigger asChild>
-            <Button variant="outline" size="sm" className="gap-2 border-slate-200 bg-white/50 text-slate-700 hover:bg-white/80 rounded-full px-4 backdrop-blur-md">
+            <Button variant="outline" size="sm" className="gap-2 border-slate-200 bg-white/50 text-slate-700 hover:bg-white/80 rounded-full px-4 backdrop-blur-md" onClick={() => trigger('nudge')}>
               <Filter className="w-4 h-4" />
               <span>Filtri</span>
             </Button>
