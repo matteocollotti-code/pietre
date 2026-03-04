@@ -4543,8 +4543,8 @@ const markersData = [
     "deathDate": "06/02/1944",
     "deathPlace": "Auschwitz",
     "age": 53,
-    "lat": 45.5483228,
-    "lng": 9.1929289,
+    "lat": 45.4741,
+    "lng": 9.1506,
     "raw": {
       "__EMPTY": "196",
       "Cognome e Nome": "Silvera Laniado Bahia",
@@ -4568,8 +4568,8 @@ const markersData = [
     "deathDate": "06/02/1944",
     "deathPlace": "Auschwitz",
     "age": 69,
-    "lat": 45.5483228,
-    "lng": 9.1929289,
+    "lat": 45.4741,
+    "lng": 9.1506,
     "raw": {
       "__EMPTY": "197",
       "Cognome e Nome": "Silvera Lelio",
@@ -4593,8 +4593,8 @@ const markersData = [
     "deathDate": "06/02/1944",
     "deathPlace": "Auschwitz",
     "age": 20,
-    "lat": 45.5483228,
-    "lng": 9.1929289,
+    "lat": 45.4741,
+    "lng": 9.1506,
     "raw": {
       "__EMPTY": "198",
       "Cognome e Nome": "Silvera Violetta",
