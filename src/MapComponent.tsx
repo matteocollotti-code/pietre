@@ -74,7 +74,7 @@ export default function MapComponent({ markers }: MapProps) {
                     spiderfyOnMaxZoom={true}
                     showCoverageOnHover={false}
                     zoomToBoundsOnClick={false}
-                    maxClusterRadius={30}
+                    maxClusterRadius={1}
                     iconCreateFunction={createClusterCustomIcon}
                     eventHandlers={{
                         clusterclick: (e: any) => {
