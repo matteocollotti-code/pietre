@@ -30,22 +30,6 @@ const createClusterCustomIcon = function (cluster: any) {
     });
 };
 
-const centraleIcon = L.icon({
-    iconUrl: '/centrale.png',
-    iconSize: [80, 80],
-    iconAnchor: [40, 80],
-    popupAnchor: [0, -80],
-    className: 'landmark-icon'
-});
-
-const sanVittoreIcon = L.icon({
-    iconUrl: '/san_vittore.png',
-    iconSize: [80, 80],
-    iconAnchor: [40, 80],
-    popupAnchor: [0, -80],
-    className: 'landmark-icon'
-});
-
 function MilanBoundary() {
     const map = useMap();
     useEffect(() => {
@@ -131,9 +115,6 @@ export default function MapComponent({ markers, routes = [] }: MapProps) {
                     maxZoom={20}
                 />
                 <MilanBoundary />
-
-                <Marker position={[45.4861, 9.2036]} icon={centraleIcon} zIndexOffset={-100} interactive={false} />
-                <Marker position={[45.4619, 9.1656]} icon={sanVittoreIcon} zIndexOffset={-100} interactive={false} />
 
                 {routes.map(r => (
                     <Polyline
