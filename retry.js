@@ -6,7 +6,7 @@ const delay = ms => new Promise(res => setTimeout(res, ms));
 async function geocodeAddress(query) {
     const url = `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(query)}&limit=1`;
     try {
-        const res = await fetch(url, { headers: { 'User-Agent': 'MappaPietreMilano/1.1' } });
+        const res = await fetch(url, { headers: { 'User-Agent': 'MappaPietreMilano/1.2' } });
         if (!res.ok) return null;
         const data = await res.json();
         if (data && data.length > 0) {
@@ -21,15 +21,24 @@ async function geocodeAddress(query) {
 function cleanAddress(addr) {
     let q = addr.toLowerCase();
 
-    // Sostituzioni di vie comuni che OpenStreetMap preferisce
+    // Sostituzioni generiche
     q = q.replace('castelmorrone', 'castel morrone');
     q = q.replace('c. correnti', 'cesare correnti');
     q = q.replace('p.zza', 'piazza');
     q = q.replace('v.le', 'viale');
     q = q.replace('v. ', 'via ');
     q = q.replace('c.so', 'corso');
-    // San antonio -> Sant'Antonio
     q = q.replace('sant antonio', "sant'antonio");
+
+    // Correzioni specifiche per gli 8 indirizzi mancanti:
+    q = q.replace('montenero', 'monte nero');
+    q = q.replace('f.lli bronzetti', 'fratelli bronzetti');
+    q = q.replace('via della passione', 'via passione'); // A volte omettendo "della" OSM lo trova meglio
+    q = q.replace('donaetello', 'donatello'); // Errore di battitura nel file Excel
+    q = q.replace('fatebene fratelli', 'fatebenefratelli'); // Scritto tutto attaccato
+    q = q.replace('r. boscovich', 'ruggero boscovich'); // Nome completo
+    q = q.replace('l. necchi', 'ludovico necchi'); // Nome completo
+    q = q.replace('monterotondo', 'monte rotondo'); // Scritto staccato
 
     return q;
 }
@@ -39,19 +48,14 @@ async function main() {
     const data = JSON.parse(fs.readFileSync(dataFile, 'utf8'));
 
     const missing = data.filter(d => d.lat === null || d.lng === null);
-    console.log(`Trovati ${missing.length} indirizzi senza coordinate. Provo formule alternative...`);
+    console.log(`Trovati ${missing.length} indirizzi senza coordinate. Riprovo con le nuove regole...`);
 
     for (let i = 0; i < data.length; i++) {
         if (data[i].lat === null || data[i].lng === null) {
             let addr = data[i].address;
 
-            // Tentativo 1: Pulizia custom e rimozione numeri civici
             let altQuery = cleanAddress(addr);
-            // Prova anche rimuovendo tutto ciò che viene dopo una virgola
-            altQuery = altQuery.split(',')[0].trim();
-            // Rimuovi eventuali numeri civici rimanenti
             let altQueryNoNumbers = altQuery.replace(/\d+/g, '').replace(/[a-z]$/i, '').trim();
-            // ma prima proviamo la pulizia
 
             console.log(`Retry: ${addr} --> ${altQuery}`);
             let coords = await geocodeAddress(`${altQuery}, Milano, Italia`);
@@ -85,6 +89,8 @@ async function main() {
     if (stillMissing.length > 0) {
         console.log("\nIndirizzi ancora non trovati:");
         stillMissing.forEach(m => console.log(`- ${m.name}: ${m.address}`));
+    } else {
+        console.log("\nTUTTI GLI INDIRIZZI SONO STATI RISOLTI CON SUCCESSO! 🎉");
     }
 }
 
