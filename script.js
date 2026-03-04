@@ -57,9 +57,45 @@ function loadMarkers(data) {
     console.log(`Caricati ${markersLayer.getLayers().length} marker sulla mappa.`);
 }
 
+// Carica e visualizza i confini del comune di Milano
+function loadMilanBoundary() {
+    const nominatimUrl =
+        'https://nominatim.openstreetmap.org/search?q=Milano%2C+Lombardia%2C+Italy&polygon_geojson=1&format=json&limit=1';
+
+    fetch(nominatimUrl, {
+        headers: { 'Accept-Language': 'it', 'User-Agent': 'pietre-inciampo-map/1.0' }
+    })
+        .then(response => {
+            if (!response.ok) throw new Error(`HTTP ${response.status}`);
+            return response.json();
+        })
+        .then(data => {
+            if (!data || data.length === 0) {
+                console.warn('Confini di Milano non trovati.');
+                return;
+            }
+            const geojson = data[0].geojson;
+            L.geoJSON(geojson, {
+                style: {
+                    color: '#c0392b',
+                    weight: 2,
+                    opacity: 0.8,
+                    fillColor: '#c0392b',
+                    fillOpacity: 0.05
+                }
+            }).addTo(map);
+            console.log('Confini di Milano caricati sulla mappa.');
+        })
+        .catch(err => {
+            console.error('Errore nel caricamento dei confini di Milano:', err);
+        });
+}
+
 // Quando la finestra si carica, verifica se c'è l'array markersData
 // definito in data.js
 window.onload = function () {
+    loadMilanBoundary();
+
     if (typeof markersData !== 'undefined') {
         loadMarkers(markersData);
     } else {
