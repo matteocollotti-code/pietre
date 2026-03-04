@@ -140,9 +140,9 @@ export default function App() {
   return (
     <div className="relative flex flex-col md:flex-row h-screen w-full bg-slate-50 overflow-hidden font-sans">
       {showSplash && (
-        <div className={`fixed inset-0 z-[2000] flex items-center justify-center bg-background/95 backdrop-blur-md transition-opacity duration-700 ${fadeSplash ? 'opacity-0' : 'opacity-100'}`}>
+        <div className={`fixed inset-0 z-[2000] flex items-center justify-center bg-background/95 backdrop-blur-md transition-opacity duration-700 animate-[splash-fade-in_0.5s_ease-out] ${fadeSplash ? 'opacity-0' : 'opacity-100'}`}>
           <div className="mx-6 flex max-w-md flex-col items-center text-center">
-            <div className="relative mb-6 h-20 w-20">
+            <div className="relative mb-6 h-20 w-20 animate-[splash-scale-in_0.5s_ease-out_0.1s_both]">
               <span className="absolute inset-0 rounded-2xl border border-primary/20 animate-pulse" />
               <span className="absolute left-2 top-2 h-4 w-4 rounded-sm bg-orange-500/80" />
               <span className="absolute left-8 top-8 h-4 w-4 rounded-sm bg-purple-500/80 animate-pulse" />
@@ -150,9 +150,9 @@ export default function App() {
               <span className="absolute left-[18px] top-[18px] h-px w-11 rotate-45 bg-muted-foreground/60" />
               <span className="absolute left-[42px] top-[42px] h-px w-11 rotate-45 bg-muted-foreground/60" />
             </div>
-            <p className="mb-2 text-sm uppercase tracking-[0.3em] text-muted-foreground">le vie della parità</p>
-            <h2 className="text-2xl font-semibold text-foreground md:text-3xl">Memoria che cammina</h2>
-            <p className="mt-3 text-sm text-muted-foreground">{appDescription}</p>
+            <p className="mb-2 text-sm uppercase tracking-[0.3em] text-muted-foreground animate-[splash-slide-up_0.5s_ease-out_0.3s_both]">le vie della parità</p>
+            <h2 className="text-2xl font-semibold text-foreground md:text-3xl animate-[splash-slide-up_0.5s_ease-out_0.45s_both]">Memoria che cammina</h2>
+            <p className="mt-3 text-sm text-muted-foreground animate-[splash-slide-up_0.5s_ease-out_0.6s_both]">{appDescription}</p>
           </div>
         </div>
       )}
