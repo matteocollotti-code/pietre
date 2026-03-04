@@ -17,7 +17,7 @@ import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 
 export default function App() {
-  const appDescription = 'Itinerari a Milano che attraversano le storie delle donne della Shoah.';
+  const appDescription = 'itinerari al femminile a milano';
   const { trigger } = useWebHaptics();
 
   // Parsing Age from data
