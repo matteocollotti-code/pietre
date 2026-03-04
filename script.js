@@ -1,3 +1,53 @@
+// ============================================================
+// SPLASH SCREEN
+// ============================================================
+(function initSplash() {
+    const splash = document.getElementById('splash-screen');
+    const enterBtn = document.getElementById('enter-btn');
+    const appHeader = document.getElementById('app-header');
+
+    function dismissSplash() {
+        splash.classList.add('fade-out');
+        // Show the app header once the splash is gone
+        splash.addEventListener('transitionend', function () {
+            splash.setAttribute('aria-hidden', 'true');
+            appHeader.classList.add('visible');
+        }, { once: true });
+    }
+
+    enterBtn.addEventListener('click', dismissSplash);
+    // Keyboard: allow Enter/Space on focused button (native button behaviour)
+})();
+
+// ============================================================
+// INFO PANEL
+// ============================================================
+(function initInfoPanel() {
+    const infoBtn = document.getElementById('info-btn');
+    const infoPanel = document.getElementById('info-panel');
+    const closeBtn = document.getElementById('info-close-btn');
+
+    infoBtn.addEventListener('click', function () {
+        const isHidden = infoPanel.hasAttribute('hidden');
+        if (isHidden) {
+            infoPanel.removeAttribute('hidden');
+            infoBtn.setAttribute('aria-expanded', 'true');
+        } else {
+            infoPanel.setAttribute('hidden', '');
+            infoBtn.setAttribute('aria-expanded', 'false');
+        }
+    });
+
+    closeBtn.addEventListener('click', function () {
+        infoPanel.setAttribute('hidden', '');
+        infoBtn.setAttribute('aria-expanded', 'false');
+    });
+})();
+
+// ============================================================
+// MAP
+// ============================================================
+
 // Coordinate di Milano
 const milanCoords = [45.4642, 9.1900];
 const initialZoom = 13;
