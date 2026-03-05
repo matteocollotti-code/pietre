@@ -3,6 +3,7 @@ import { Slider } from '@/components/ui/slider';
 import { Label } from '@/components/ui/label';
 import { Button } from '@/components/ui/button';
 import { Switch } from '@/components/ui/switch';
+import { THEME_CONFIG } from '@/lib/themeConfig';
 
 export type GenderFilter = 'all' | 'm' | 'f';
 export type ThemesState = { corpi: boolean; case: boolean; cose: boolean; amore: boolean; };
@@ -78,22 +79,37 @@ export default function FilterPanel({
             <div className="space-y-4 pt-2 border-t border-slate-200/50">
                 <Label className="text-sm font-semibold text-slate-700 uppercase tracking-wide">Percorsi Tematici</Label>
                 <div className="flex flex-col gap-3">
-                    <div className="flex items-center justify-between bg-white/50 p-2 py-3 rounded-lg backdrop-blur-sm border border-slate-200 shadow-sm">
-                        <Label htmlFor="corpi" className="cursor-pointer font-medium text-slate-700">Corpi</Label>
-                        <Switch id="corpi" checked={themes.corpi} onCheckedChange={(c) => { trigger('nudge'); setThemes({ ...themes, corpi: c }); }} />
-                    </div>
-                    <div className="flex items-center justify-between bg-white/50 p-2 py-3 rounded-lg backdrop-blur-sm border border-slate-200 shadow-sm">
-                        <Label htmlFor="case" className="cursor-pointer font-medium text-slate-700">Casa</Label>
-                        <Switch id="case" checked={themes.case} onCheckedChange={(c) => { trigger('nudge'); setThemes({ ...themes, case: c }); }} />
-                    </div>
-                    <div className="flex items-center justify-between bg-white/50 p-2 py-3 rounded-lg backdrop-blur-sm border border-slate-200 shadow-sm">
-                        <Label htmlFor="cose" className="cursor-pointer font-medium text-slate-700">Cose</Label>
-                        <Switch id="cose" checked={themes.cose} onCheckedChange={(c) => { trigger('nudge'); setThemes({ ...themes, cose: c }); }} />
-                    </div>
-                    <div className="flex items-center justify-between bg-white/50 p-2 py-3 rounded-lg backdrop-blur-sm border border-slate-200 shadow-sm">
-                        <Label htmlFor="amore" className="cursor-pointer font-medium text-slate-700">Amore</Label>
-                        <Switch id="amore" checked={themes.amore} onCheckedChange={(c) => { trigger('nudge'); setThemes({ ...themes, amore: c }); }} />
-                    </div>
+                    {(Object.keys(THEME_CONFIG) as Array<keyof typeof THEME_CONFIG>).map((key) => {
+                        const theme = THEME_CONFIG[key];
+                        const Icon = theme.icon;
+                        const themeKey = key as keyof ThemesState;
+                        return (
+                            <div
+                                key={key}
+                                className="flex items-center justify-between bg-white/50 p-2 py-3 rounded-lg backdrop-blur-sm border shadow-sm transition-colors"
+                                style={{ borderColor: themes[themeKey] ? theme.color + '66' : undefined }}
+                            >
+                                <div className="flex items-center gap-2">
+                                    <span
+                                        className="flex items-center justify-center w-7 h-7 rounded-md flex-shrink-0"
+                                        style={{ backgroundColor: theme.color + '1a', color: theme.color }}
+                                    >
+                                        <Icon className="w-4 h-4" />
+                                    </span>
+                                    <span
+                                        className="w-2.5 h-2.5 rounded-full flex-shrink-0"
+                                        style={{ backgroundColor: theme.color }}
+                                    />
+                                    <Label htmlFor={key} className="cursor-pointer font-medium text-slate-700">{theme.label}</Label>
+                                </div>
+                                <Switch
+                                    id={key}
+                                    checked={themes[themeKey]}
+                                    onCheckedChange={(c) => { trigger('nudge'); setThemes({ ...themes, [key]: c }); }}
+                                />
+                            </div>
+                        );
+                    })}
                 </div>
             </div>
         </div>
