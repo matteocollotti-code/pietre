@@ -6,6 +6,7 @@ import precomputedRoutes from './routes.json';
 import MapComponent from './MapComponent';
 import FilterPanel from './FilterPanel';
 import type { GenderFilter, ThemesState } from './FilterPanel';
+import { THEME_CONFIG } from '@/lib/themeConfig';
 import {
   Sheet,
   SheetContent,
@@ -94,18 +95,11 @@ export default function App() {
     const routes: { id: string, color: string, points: [number, number][] }[] = [];
     const r = precomputedRoutes as unknown as Record<string, [number, number][]>;
 
-    if (themes.corpi && r.corpi) {
-      routes.push({ id: 'corpi', color: '#dc2626', points: r.corpi }); // red-600
-    }
-    if (themes.case && r.case) {
-      routes.push({ id: 'case', color: '#16a34a', points: r.case }); // green-600
-    }
-    if (themes.cose && r.cose) {
-      routes.push({ id: 'cose', color: '#2563eb', points: r.cose }); // blue-600
-    }
-    if (themes.amore && r.amore) {
-      routes.push({ id: 'amore', color: '#db2777', points: r.amore }); // pink-600
-    }
+    (Object.keys(themes) as Array<keyof ThemesState>).forEach((key) => {
+      if (themes[key] && r[key]) {
+        routes.push({ id: key, color: THEME_CONFIG[key].color, points: r[key] });
+      }
+    });
     return routes;
   }, [themes]);
 
