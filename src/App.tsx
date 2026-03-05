@@ -208,16 +208,6 @@ export default function App() {
         </div>
 
         <div className="flex items-center gap-2">
-          {thematicRoutes.length > 0 && (
-            <Button
-              onClick={downloadDirections}
-              size="sm"
-              aria-label="Scarica indicazioni"
-              className="rounded-full px-3 bg-gradient-to-r from-orange-500 to-purple-600 text-white font-semibold hover:from-orange-600 hover:to-purple-700 transition-all duration-300 shadow-md"
-            >
-              <Download className="w-3.5 h-3.5" />
-            </Button>
-          )}
           <Sheet>
             <SheetTrigger asChild>
               <Button variant="outline" size="sm" className="gap-2 border-slate-200 bg-white/50 text-slate-700 hover:bg-white/80 rounded-full px-4 backdrop-blur-md" onClick={() => trigger('nudge')}>
@@ -282,6 +272,19 @@ export default function App() {
           )}
         </div>
       </div >
+
+      {/* FLOATING DOWNLOAD BUTTON (Mobile only) */}
+      {thematicRoutes.length > 0 && (
+        <div className="md:hidden fixed bottom-6 right-5 z-[999]">
+          <Button
+            onClick={downloadDirections}
+            aria-label="Scarica indicazioni"
+            className="rounded-full h-14 w-14 bg-gradient-to-br from-orange-500 to-purple-600 text-white shadow-2xl shadow-orange-500/40 hover:from-orange-600 hover:to-purple-700 hover:scale-105 transition-all duration-300 flex items-center justify-center"
+          >
+            <Download className="w-6 h-6" />
+          </Button>
+        </div>
+      )}
 
       {/* MAPPA */}
       < div className="flex-1 relative z-0" >

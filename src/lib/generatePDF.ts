@@ -163,10 +163,16 @@ export function generateItineraryPDF(sections: RouteSection[], mapScreenshotData
   doc.setGState(new GState({ opacity: 1 }));
 
   if (mapScreenshotDataUrl) {
-    const mapW = contentW;
+    const maxMapW = contentW;
     const maxMapH = 72;
-    const mapH = mapAspectRatio ? Math.min(mapW / mapAspectRatio, maxMapH) : Math.min(mapW / 1.5, maxMapH);
-    const mapX = margin;
+    const ratio = mapAspectRatio ?? 1.5;
+    let mapW = maxMapW;
+    let mapH = mapW / ratio;
+    if (mapH > maxMapH) {
+      mapH = maxMapH;
+      mapW = mapH * ratio;
+    }
+    const mapX = margin + (contentW - mapW) / 2;
     const mapY = pageH * 0.61;
     doc.setFillColor(255, 255, 255);
     doc.setGState(new GState({ opacity: 0.18 }));
