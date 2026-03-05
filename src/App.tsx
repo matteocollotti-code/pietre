@@ -271,7 +271,9 @@ export default function App() {
             <p className="text-sm font-bold text-slate-700"> {filteredMarkers.length} Pietre filtrate</p>
           </Card>
         </div >
-        <MapComponent markers={filteredMarkers} routes={thematicRoutes} onOpenDetail={setActiveDetail} />
+        {!showSplash && (
+          <MapComponent markers={filteredMarkers} routes={thematicRoutes} onOpenDetail={setActiveDetail} />
+        )}
 
         {/* Download Directions Button */}
         {thematicRoutes.length > 0 && (
