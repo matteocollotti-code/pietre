@@ -90,7 +90,7 @@ interface RouteSection {
   stones: Stone[];
 }
 
-export function generateItineraryPDF(sections: RouteSection[], mapScreenshotDataUrl?: string) {
+export function generateItineraryPDF(sections: RouteSection[], mapScreenshotDataUrl?: string, mapAspectRatio?: number) {
   const doc = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
 
   const pageW = doc.internal.pageSize.getWidth();
@@ -164,7 +164,8 @@ export function generateItineraryPDF(sections: RouteSection[], mapScreenshotData
 
   if (mapScreenshotDataUrl) {
     const mapW = contentW;
-    const mapH = 60;
+    const maxMapH = 72;
+    const mapH = mapAspectRatio ? Math.min(mapW / mapAspectRatio, maxMapH) : Math.min(mapW / 1.5, maxMapH);
     const mapX = margin;
     const mapY = pageH * 0.61;
     doc.setFillColor(255, 255, 255);

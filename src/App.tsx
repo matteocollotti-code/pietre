@@ -106,7 +106,7 @@ export default function App() {
   }, [themes]);
 
   // Generate and download directions for active routes as a branded PDF
-  const captureMapScreenshot = async () => {
+  const captureMapScreenshot = async (): Promise<{ dataUrl: string; aspectRatio: number } | undefined> => {
     const mapElement = document.getElementById('route-map-container');
     if (!mapElement) return undefined;
 
@@ -117,7 +117,10 @@ export default function App() {
         backgroundColor: '#f8fafc',
         scale: Math.min(window.devicePixelRatio || 1, 2),
       });
-      return canvas.toDataURL('image/jpeg', 0.92);
+      return {
+        dataUrl: canvas.toDataURL('image/jpeg', 0.92),
+        aspectRatio: canvas.width / canvas.height,
+      };
     } catch {
       return undefined;
     }
@@ -167,7 +170,7 @@ export default function App() {
     });
 
     const mapScreenshot = await captureMapScreenshot();
-    const doc = generateItineraryPDF(sections, mapScreenshot);
+    const doc = generateItineraryPDF(sections, mapScreenshot?.dataUrl, mapScreenshot?.aspectRatio);
     doc.save(`itinerario_${activeThemes.join('_')}.pdf`);
   };
 
@@ -204,25 +207,37 @@ export default function App() {
           </div>
         </div>
 
-        <Sheet>
-          <SheetTrigger asChild>
-            <Button variant="outline" size="sm" className="gap-2 border-slate-200 bg-white/50 text-slate-700 hover:bg-white/80 rounded-full px-4 backdrop-blur-md" onClick={() => trigger('nudge')}>
-              <Filter className="w-4 h-4" />
-              <span>Filtri</span>
+        <div className="flex items-center gap-2">
+          {thematicRoutes.length > 0 && (
+            <Button
+              onClick={downloadDirections}
+              size="sm"
+              aria-label="Scarica indicazioni"
+              className="rounded-full px-3 bg-gradient-to-r from-orange-500 to-purple-600 text-white font-semibold hover:from-orange-600 hover:to-purple-700 transition-all duration-300 shadow-md"
+            >
+              <Download className="w-3.5 h-3.5" />
             </Button>
-          </SheetTrigger>
-          <SheetContent side="bottom" className="h-[50vh] bg-white/90 backdrop-blur-xl border-t border-white/50 rounded-t-2xl sm:max-w-none overflow-y-auto">
-            <SheetHeader className="mb-4">
-              <SheetTitle>Opzioni di Ricerca</SheetTitle>
-            </SheetHeader>
-            <FilterPanel
-              gender={gender} setGender={setGender}
-              ageRange={ageRange} setAgeRange={setAgeRange}
-              minAge={minAge} maxAge={maxAge}
-              themes={themes} setThemes={setThemes}
-            />
-          </SheetContent>
-        </Sheet>
+          )}
+          <Sheet>
+            <SheetTrigger asChild>
+              <Button variant="outline" size="sm" className="gap-2 border-slate-200 bg-white/50 text-slate-700 hover:bg-white/80 rounded-full px-4 backdrop-blur-md" onClick={() => trigger('nudge')}>
+                <Filter className="w-4 h-4" />
+                <span>Filtri</span>
+              </Button>
+            </SheetTrigger>
+            <SheetContent side="bottom" className="h-[50vh] bg-white/90 backdrop-blur-xl border-t border-white/50 rounded-t-2xl sm:max-w-none overflow-y-auto">
+              <SheetHeader className="mb-4">
+                <SheetTitle>Opzioni di Ricerca</SheetTitle>
+              </SheetHeader>
+              <FilterPanel
+                gender={gender} setGender={setGender}
+                ageRange={ageRange} setAgeRange={setAgeRange}
+                minAge={minAge} maxAge={maxAge}
+                themes={themes} setThemes={setThemes}
+              />
+            </SheetContent>
+          </Sheet>
+        </div>
       </div>
 
       {/* SIDEBAR DESKTOP (Visibile solo da schermi medi in su) */}
@@ -252,10 +267,19 @@ export default function App() {
           />
         </div>
 
-        <div className="p-4 border-t border-white/50 bg-white/30 text-center">
-          <p className="text-xs text-slate-500 font-medium font-sans">
+        <div className="p-4 border-t border-white/50 bg-white/30 space-y-3">
+          <p className="text-xs text-slate-500 font-medium font-sans text-center">
             Mostrando {filteredMarkers.length} su {data.length}
           </p>
+          {thematicRoutes.length > 0 && (
+            <Button
+              onClick={downloadDirections}
+              className="w-full gap-2 rounded-full shadow-lg bg-gradient-to-r from-orange-500 to-purple-600 text-white font-semibold hover:from-orange-600 hover:to-purple-700 transition-all duration-300"
+            >
+              <Download className="w-4 h-4" />
+              Scarica indicazioni
+            </Button>
+          )}
         </div>
       </div >
 
@@ -269,19 +293,6 @@ export default function App() {
         </div >
         {!showSplash && (
           <MapComponent markers={filteredMarkers} routes={thematicRoutes} onOpenDetail={setActiveDetail} containerId="route-map-container" />
-        )}
-
-        {/* Download Directions Button */}
-        {thematicRoutes.length > 0 && (
-          <div className="absolute z-[999] top-[4.75rem] right-4 md:top-auto md:right-auto md:bottom-6 md:left-1/2 md:-translate-x-1/2">
-            <Button
-              onClick={downloadDirections}
-              className="gap-2 rounded-full px-4 py-2 text-sm md:px-6 md:py-3 md:text-base shadow-xl bg-gradient-to-r from-orange-500 to-purple-600 text-white font-semibold hover:from-orange-600 hover:to-purple-700 transition-all duration-300 hover:shadow-2xl hover:scale-105"
-            >
-              <Download className="w-4 h-4" />
-              Scarica indicazioni
-            </Button>
-          </div>
         )}
       </div >
 
