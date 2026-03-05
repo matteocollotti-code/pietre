@@ -88,6 +88,7 @@ interface Stone {
 interface RouteSection {
   themeKey: string;
   stones: Stone[];
+  description?: string;
 }
 
 export function generateItineraryPDF(sections: RouteSection[], mapScreenshotDataUrl?: string, mapAspectRatio?: number) {
@@ -99,7 +100,7 @@ export function generateItineraryPDF(sections: RouteSection[], mapScreenshotData
   const contentW = pageW - margin * 2;
 
   // ─── PRE-COMPUTE TOTAL PAGE COUNT ─────────────────────────────────────────
-  // cover (1) + per-section pages + closing (1)
+  // cover (1) + per-section: overview (1) + list pages + closing (1)
   const cardH = 22;
   const cardGap = 4;
   const cardStep = cardH + cardGap; // 26 mm per stop
@@ -115,8 +116,9 @@ export function generateItineraryPDF(sections: RouteSection[], mapScreenshotData
     return 1 + Math.ceil(remaining / contPageCapacity);
   }
 
+  // Each section: 1 overview page + list pages
   const totalPages =
-    1 + sections.reduce((acc, s) => acc + sectionPageCount(s.stones.length), 0) + 1;
+    1 + sections.reduce((acc, s) => acc + 1 + sectionPageCount(s.stones.length), 0) + 1;
 
   // ─── COVER PAGE ───────────────────────────────────────────────────────────
 
@@ -162,37 +164,18 @@ export function generateItineraryPDF(sections: RouteSection[], mapScreenshotData
   doc.line(margin + 20, pageH * 0.60, pageW - margin - 20, pageH * 0.60);
   doc.setGState(new GState({ opacity: 1 }));
 
-  if (mapScreenshotDataUrl) {
-    const maxMapW = contentW;
-    const maxMapH = 72;
-    const ratio = mapAspectRatio ?? 1.5;
-    let mapW = maxMapW;
-    let mapH = mapW / ratio;
-    if (mapH > maxMapH) {
-      mapH = maxMapH;
-      mapW = mapH * ratio;
-    }
-    const mapX = margin + (contentW - mapW) / 2;
-    const mapY = pageH * 0.61;
-    doc.setFillColor(255, 255, 255);
-    doc.setGState(new GState({ opacity: 0.18 }));
-    doc.roundedRect(mapX - 1.2, mapY - 1.2, mapW + 2.4, mapH + 2.4, 3, 3, 'F');
-    doc.setGState(new GState({ opacity: 1 }));
-    doc.addImage(mapScreenshotDataUrl, 'JPEG', mapX, mapY, mapW, mapH, undefined, 'FAST');
-  }
-
   // Active routes summary
   const routeNames = sections.map(s => THEME_CONFIG[s.themeKey]?.label ?? s.themeKey).join('  ·  ');
   doc.setFontSize(10);
   doc.setFont('helvetica', 'italic');
   doc.setTextColor(...BRAND.white);
-  doc.text(routeNames, pageW / 2, pageH * 0.85, { align: 'center' });
+  doc.text(routeNames, pageW / 2, pageH * 0.68, { align: 'center' });
 
   // Total stops
   const totalStops = sections.reduce((acc, s) => acc + s.stones.length, 0);
   doc.setFontSize(9);
   doc.setFont('helvetica', 'normal');
-  doc.text(`${totalStops} tappe totali`, pageW / 2, pageH * 0.89, { align: 'center' });
+  doc.text(`${totalStops} tappe totali`, pageW / 2, pageH * 0.73, { align: 'center' });
 
   // Bottom disclaimer
   doc.setFontSize(7.5);
@@ -206,11 +189,105 @@ export function generateItineraryPDF(sections: RouteSection[], mapScreenshotData
   let currentPage = 1;
 
   for (const section of sections) {
+    const themeColor = THEME_COLORS[section.themeKey] ?? BRAND.purple;
+    const themeLabel = THEME_CONFIG[section.themeKey]?.label ?? section.themeKey;
+
+    // ── Overview page: description (left) + map screenshot (right) ──
     doc.addPage();
     currentPage++;
 
-    const themeColor = THEME_COLORS[section.themeKey] ?? BRAND.purple;
-    const themeLabel = THEME_CONFIG[section.themeKey]?.label ?? section.themeKey;
+    // Page background
+    doc.setFillColor(...BRAND.lightGray);
+    doc.rect(0, 0, pageW, pageH, 'F');
+
+    // Section header strip (same as stops list pages)
+    drawGradientRect(doc, 0, 0, pageW, 38, themeColor, BRAND.purple);
+    drawLogo(doc, margin + 8, 19, 10);
+    doc.setFontSize(22);
+    doc.setFont('helvetica', 'bold');
+    doc.setTextColor(...BRAND.white);
+    doc.text(`Percorso ${themeLabel}`, margin + 22, 16);
+    doc.setFontSize(9);
+    doc.setFont('helvetica', 'normal');
+    doc.setTextColor(255, 255, 255);
+    doc.setGState(new GState({ opacity: 0.85 }));
+    doc.text(`${section.stones.length} tappe · Le Vie della Parità`, margin + 22, 23);
+    doc.setGState(new GState({ opacity: 1 }));
+    doc.setFillColor(...themeColor);
+    doc.rect(0, 36, pageW, 2.5, 'F');
+
+    // Layout: left column for description, right column for screenshot
+    const overviewBodyY = 46;
+    const overviewBodyH = footerTop - overviewBodyY;
+    // Resolve description: prefer value passed in section, fall back to static config
+    const descText = section.description ?? THEME_CONFIG[section.themeKey]?.description ?? '';
+
+    if (mapScreenshotDataUrl) {
+      // Right column: screenshot (portrait/vertical format)
+      const imgColW = contentW * 0.42;
+      const imgX = pageW - margin - imgColW;
+      const imgMaxH = overviewBodyH;
+      // The map sidebar captures a vertical (portrait) region; default ratio < 1 reflects that.
+      const ratio = mapAspectRatio ?? 0.6;
+      let imgW = imgColW;
+      let imgH = imgW / ratio;
+      if (imgH > imgMaxH) {
+        imgH = imgMaxH;
+        imgW = imgH * ratio;
+      }
+      const imgY = overviewBodyY + (overviewBodyH - imgH) / 2;
+
+      // Subtle frame behind image
+      doc.setFillColor(242, 240, 255);
+      doc.roundedRect(imgX - 1.5, imgY - 1.5, imgW + 3, imgH + 3, 3, 3, 'F');
+      doc.addImage(mapScreenshotDataUrl, 'JPEG', imgX, imgY, imgW, imgH, undefined, 'FAST');
+
+      // Left column: description text
+      const textColW = contentW - imgColW - 8;
+      const textX = margin;
+
+      doc.setFontSize(13);
+      doc.setFont('helvetica', 'bold');
+      doc.setTextColor(...BRAND.dark);
+      doc.text('Descrizione del percorso', textX, overviewBodyY + 8);
+
+      // Thin accent line under title
+      doc.setDrawColor(...themeColor);
+      doc.setLineWidth(0.8);
+      doc.line(textX, overviewBodyY + 11, textX + textColW, overviewBodyY + 11);
+
+      if (descText) {
+        doc.setFontSize(9.5);
+        doc.setFont('helvetica', 'normal');
+        doc.setTextColor(...BRAND.bodyText);
+        const descLines = doc.splitTextToSize(descText, textColW);
+        doc.text(descLines, textX, overviewBodyY + 18);
+      }
+    } else {
+      // No screenshot: full-width description
+      doc.setFontSize(13);
+      doc.setFont('helvetica', 'bold');
+      doc.setTextColor(...BRAND.dark);
+      doc.text('Descrizione del percorso', margin, overviewBodyY + 8);
+
+      doc.setDrawColor(...themeColor);
+      doc.setLineWidth(0.8);
+      doc.line(margin, overviewBodyY + 11, pageW - margin, overviewBodyY + 11);
+
+      if (descText) {
+        doc.setFontSize(9.5);
+        doc.setFont('helvetica', 'normal');
+        doc.setTextColor(...BRAND.bodyText);
+        const descLines = doc.splitTextToSize(descText, contentW);
+        doc.text(descLines, margin, overviewBodyY + 18);
+      }
+    }
+
+    addPageFooter(doc, pageW, pageH, currentPage, totalPages);
+
+    // ── Stops list page(s) ──
+    doc.addPage();
+    currentPage++;
 
     // Page background (very light)
     doc.setFillColor(...BRAND.lightGray);

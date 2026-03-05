@@ -159,6 +159,7 @@ export default function App() {
 
       return {
         themeKey,
+        description: THEME_CONFIG[themeKey]?.description,
         stones: orderedStones.map((s: any) => ({
           name: s.name,
           address: s.address,
