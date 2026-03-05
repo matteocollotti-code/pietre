@@ -7,6 +7,7 @@ import MapComponent from './MapComponent';
 import FilterPanel from './FilterPanel';
 import type { GenderFilter, ThemesState } from './FilterPanel';
 import { THEME_CONFIG } from '@/lib/themeConfig';
+import { generateItineraryPDF } from '@/lib/generatePDF';
 import {
   Sheet,
   SheetContent,
@@ -103,70 +104,52 @@ export default function App() {
     return routes;
   }, [themes]);
 
-  // Generate and download directions for active routes
+  // Generate and download directions for active routes as a branded PDF
   const downloadDirections = () => {
-    const themeLabels: Record<string, string> = {
-      corpi: 'Corpi', case: 'Casa', cose: 'Cose', amore: 'Amore'
-    };
     const activeThemes = Object.entries(themes).filter(([, v]) => v).map(([k]) => k);
     if (activeThemes.length === 0) return;
 
-    let text = 'ITINERARI AL FEMMINILE A MILANO\n';
-    text += 'Le vie della parità — Indicazioni di percorso\n';
-    text += '='.repeat(50) + '\n\n';
+    const r = precomputedRoutes as unknown as Record<string, [number, number][]>;
 
-    for (const themeKey of activeThemes) {
-      const label = themeLabels[themeKey] || themeKey;
-      text += `\n${'—'.repeat(40)}\n`;
-      text += `PERCORSO: ${label.toUpperCase()}\n`;
-      text += `${'—'.repeat(40)}\n\n`;
-
-      // Get the stones for this theme in route order (nearest-neighbor from OSRM)
+    const sections = activeThemes.map((themeKey) => {
+      // Get the stones for this theme
       const stones = data.filter((d: any) => {
         if (!d.lat || !d.lng || !d.raw) return false;
         if (themeKey === 'cose') return d.raw.cose == 1 || d.raw['cose '] == 1;
         return d.raw[themeKey] == 1;
       });
 
-      // Sort stones by proximity to the route order from routes.json
-      const r = precomputedRoutes as unknown as Record<string, [number, number][]>;
+      // Sort stones by proximity to the precomputed route order
       const routeCoords = r[themeKey];
+      let orderedStones = stones;
       if (routeCoords && routeCoords.length > 0) {
-        // For each stone, find its closest point on the route to determine visit order
         const withOrder = stones.map((s: any) => {
           let minDist = Infinity;
           let bestIdx = 0;
           for (let i = 0; i < routeCoords.length; i++) {
-            const d = Math.pow(s.lat - routeCoords[i][0], 2) + Math.pow(s.lng - routeCoords[i][1], 2);
-            if (d < minDist) { minDist = d; bestIdx = i; }
+            const dist = Math.pow(s.lat - routeCoords[i][0], 2) + Math.pow(s.lng - routeCoords[i][1], 2);
+            if (dist < minDist) { minDist = dist; bestIdx = i; }
           }
           return { stone: s, order: bestIdx };
         });
         withOrder.sort((a: any, b: any) => a.order - b.order);
-
-        withOrder.forEach(({ stone }: any, idx: number) => {
-          text += `Tappa ${idx + 1}: ${stone.name}\n`;
-          text += `  Indirizzo: ${stone.address}\n`;
-          if (stone.birthDate) text += `  Nascita: ${stone.birthDate}\n`;
-          if (stone.deathDate) text += `  Morte: ${stone.deathDate}\n`;
-          if (stone.deathPlace) text += `  Luogo di morte: ${stone.deathPlace}\n`;
-          text += '\n';
-        });
-
-        text += `Totale tappe: ${withOrder.length}\n`;
+        orderedStones = withOrder.map(({ stone }: any) => stone);
       }
-    }
 
-    text += '\n' + '='.repeat(50) + '\n';
-    text += 'Buon cammino!\n';
+      return {
+        themeKey,
+        stones: orderedStones.map((s: any) => ({
+          name: s.name,
+          address: s.address,
+          birthDate: s.birthDate,
+          deathDate: s.deathDate,
+          deathPlace: s.deathPlace,
+        })),
+      };
+    });
 
-    const blob = new Blob([text], { type: 'text/plain;charset=utf-8' });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = `itinerario_${activeThemes.join('_')}.txt`;
-    a.click();
-    URL.revokeObjectURL(url);
+    const doc = generateItineraryPDF(sections);
+    doc.save(`itinerario_${activeThemes.join('_')}.pdf`);
   };
 
   return (
