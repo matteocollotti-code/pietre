@@ -90,7 +90,7 @@ interface RouteSection {
   stones: Stone[];
 }
 
-export function generateItineraryPDF(sections: RouteSection[]) {
+export function generateItineraryPDF(sections: RouteSection[], mapScreenshotDataUrl?: string) {
   const doc = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
 
   const pageW = doc.internal.pageSize.getWidth();
@@ -159,21 +159,33 @@ export function generateItineraryPDF(sections: RouteSection[]) {
   doc.setDrawColor(...BRAND.white);
   doc.setLineWidth(0.5);
   doc.setGState(new GState({ opacity: 0.5 }));
-  doc.line(margin + 20, pageH * 0.61, pageW - margin - 20, pageH * 0.61);
+  doc.line(margin + 20, pageH * 0.60, pageW - margin - 20, pageH * 0.60);
   doc.setGState(new GState({ opacity: 1 }));
+
+  if (mapScreenshotDataUrl) {
+    const mapW = contentW;
+    const mapH = 60;
+    const mapX = margin;
+    const mapY = pageH * 0.61;
+    doc.setFillColor(255, 255, 255);
+    doc.setGState(new GState({ opacity: 0.18 }));
+    doc.roundedRect(mapX - 1.2, mapY - 1.2, mapW + 2.4, mapH + 2.4, 3, 3, 'F');
+    doc.setGState(new GState({ opacity: 1 }));
+    doc.addImage(mapScreenshotDataUrl, 'JPEG', mapX, mapY, mapW, mapH, undefined, 'FAST');
+  }
 
   // Active routes summary
   const routeNames = sections.map(s => THEME_CONFIG[s.themeKey]?.label ?? s.themeKey).join('  ·  ');
   doc.setFontSize(10);
   doc.setFont('helvetica', 'italic');
   doc.setTextColor(...BRAND.white);
-  doc.text(routeNames, pageW / 2, pageH * 0.66, { align: 'center' });
+  doc.text(routeNames, pageW / 2, pageH * 0.85, { align: 'center' });
 
   // Total stops
   const totalStops = sections.reduce((acc, s) => acc + s.stones.length, 0);
   doc.setFontSize(9);
   doc.setFont('helvetica', 'normal');
-  doc.text(`${totalStops} tappe totali`, pageW / 2, pageH * 0.71, { align: 'center' });
+  doc.text(`${totalStops} tappe totali`, pageW / 2, pageH * 0.89, { align: 'center' });
 
   // Bottom disclaimer
   doc.setFontSize(7.5);

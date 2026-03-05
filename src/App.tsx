@@ -1,6 +1,7 @@
 import { useState, useMemo, useEffect } from 'react';
 import { Filter, Info, Download } from 'lucide-react';
 import { useWebHaptics } from 'web-haptics/react';
+import html2canvas from 'html2canvas';
 import data from '../data.json';
 import precomputedRoutes from './routes.json';
 import MapComponent from './MapComponent';
@@ -19,7 +20,7 @@ import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 
 export default function App() {
-  const appDescription = 'itinerari al femminile a milano';
+  const appDescription = 'Itinerari di memoria a Milano';
   const { trigger } = useWebHaptics();
 
   // Parsing Age from data
@@ -105,7 +106,24 @@ export default function App() {
   }, [themes]);
 
   // Generate and download directions for active routes as a branded PDF
-  const downloadDirections = () => {
+  const captureMapScreenshot = async () => {
+    const mapElement = document.getElementById('route-map-container');
+    if (!mapElement) return undefined;
+
+    try {
+      const canvas = await html2canvas(mapElement, {
+        useCORS: true,
+        allowTaint: false,
+        backgroundColor: '#f8fafc',
+        scale: Math.min(window.devicePixelRatio || 1, 2),
+      });
+      return canvas.toDataURL('image/jpeg', 0.92);
+    } catch {
+      return undefined;
+    }
+  };
+
+  const downloadDirections = async () => {
     const activeThemes = Object.entries(themes).filter(([, v]) => v).map(([k]) => k);
     if (activeThemes.length === 0) return;
 
@@ -148,12 +166,13 @@ export default function App() {
       };
     });
 
-    const doc = generateItineraryPDF(sections);
+    const mapScreenshot = await captureMapScreenshot();
+    const doc = generateItineraryPDF(sections, mapScreenshot);
     doc.save(`itinerario_${activeThemes.join('_')}.pdf`);
   };
 
   return (
-    <div className="relative flex flex-col md:flex-row h-screen w-full bg-slate-50 overflow-hidden font-sans">
+    <div className="relative flex flex-col md:flex-row h-screen h-[100dvh] w-full bg-slate-50 overflow-hidden font-sans">
       {showSplash && (
         <div className={`fixed inset-0 z-[2000] flex items-center justify-center bg-background/95 backdrop-blur-md transition-opacity duration-700 animate-[splash-fade-in_0.5s_ease-out] ${fadeSplash ? 'opacity-0' : 'opacity-100'}`}>
           <div className="mx-6 flex max-w-md flex-col items-center text-center">
@@ -249,15 +268,15 @@ export default function App() {
           </Card>
         </div >
         {!showSplash && (
-          <MapComponent markers={filteredMarkers} routes={thematicRoutes} onOpenDetail={setActiveDetail} />
+          <MapComponent markers={filteredMarkers} routes={thematicRoutes} onOpenDetail={setActiveDetail} containerId="route-map-container" />
         )}
 
         {/* Download Directions Button */}
         {thematicRoutes.length > 0 && (
-          <div className="absolute bottom-6 left-1/2 -translate-x-1/2 z-[999]">
+          <div className="absolute z-[999] top-[4.75rem] right-4 md:top-auto md:right-auto md:bottom-6 md:left-1/2 md:-translate-x-1/2">
             <Button
               onClick={downloadDirections}
-              className="gap-2 rounded-full px-6 py-3 shadow-xl bg-gradient-to-r from-orange-500 to-purple-600 text-white font-semibold hover:from-orange-600 hover:to-purple-700 transition-all duration-300 hover:shadow-2xl hover:scale-105"
+              className="gap-2 rounded-full px-4 py-2 text-sm md:px-6 md:py-3 md:text-base shadow-xl bg-gradient-to-r from-orange-500 to-purple-600 text-white font-semibold hover:from-orange-600 hover:to-purple-700 transition-all duration-300 hover:shadow-2xl hover:scale-105"
             >
               <Download className="w-4 h-4" />
               Scarica indicazioni

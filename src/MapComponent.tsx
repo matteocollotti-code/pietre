@@ -99,11 +99,12 @@ interface MapProps {
     markers: any[];
     routes?: { id: string, color: string, points: [number, number][] }[];
     onOpenDetail?: (info: { name: string, theme: string }) => void;
+    containerId?: string;
 }
 
-export default function MapComponent({ markers, routes = [], onOpenDetail }: MapProps) {
+export default function MapComponent({ markers, routes = [], onOpenDetail, containerId }: MapProps) {
     return (
-        <div className="w-full h-full relative z-0">
+        <div id={containerId} className="w-full h-full relative z-0">
             <MapContainer
                 center={milanCoords}
                 zoom={initialZoom}
