@@ -321,10 +321,28 @@ export default function App() {
               Questa è una scheda tematica. Le pietre d'inciampo non sono solo luoghi di memoria statica, ma snodi di storie complesse che si intrecciano con i percorsi della città.
             </p>
             {activeDetail && (() => {
-              const matchedTextObj = themeTexts.find(t =>
-                t.theme.toLowerCase() === activeDetail.theme.toLowerCase() &&
-                (t.name.toLowerCase() === activeDetail.name.toLowerCase() || (t.aliases && t.aliases.some((a: string) => a.toLowerCase() === activeDetail.name.toLowerCase())))
-              );
+              const normalizeNameForMatch = (name: string) => {
+                return name.toLowerCase()
+                  .normalize("NFD").replace(/[\u0300-\u036f]/g, "")
+                  .replace(/['"’]/g, '').trim();
+              };
+
+              // The name in the database (activeDetail.name)
+              const dNameNormalized = normalizeNameForMatch(activeDetail.name);
+
+              const matchedTextObj = themeTexts.find(t => {
+                if (t.theme.toLowerCase() !== activeDetail.theme.toLowerCase()) return false;
+
+                const namesToCheck = [t.name, ...(t.aliases || [])].map(normalizeNameForMatch);
+
+                return namesToCheck.some(nameToMatch => {
+                  const textNameParts = nameToMatch.split(' ').filter(Boolean);
+                  // Does data.json name contain all parts of the text's name?
+                  // e.g. text name "JENIDE RUSSO" -> parts ["jenide", "russo"]
+                  // dName "Russo Jenide" contains both.
+                  return textNameParts.every(part => dNameNormalized.includes(part));
+                });
+              });
 
               if (matchedTextObj && matchedTextObj.text) {
                 return matchedTextObj.text.split('\n').map((paragraph: string, idx: number) => (
