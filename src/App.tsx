@@ -317,9 +317,7 @@ export default function App() {
             <p className="text-base text-slate-500 font-semibold tracking-wide ml-[3.25rem]">Tema dedicato a: <span className="text-slate-800">{activeDetail?.name}</span></p>
           </SheetHeader>
           <div className="flex-1 overflow-y-auto px-1 py-6 prose prose-slate text-justify">
-            <p className="text-lg leading-relaxed text-slate-700 font-medium mb-4">
-              Questa è una scheda tematica. Le pietre d'inciampo non sono solo luoghi di memoria statica, ma snodi di storie complesse che si intrecciano con i percorsi della città.
-            </p>
+
             {activeDetail && (() => {
               const normalizeNameForMatch = (name: string) => {
                 return name.toLowerCase()
@@ -345,9 +343,17 @@ export default function App() {
               });
 
               if (matchedTextObj && matchedTextObj.text) {
-                return matchedTextObj.text.split('\n').map((paragraph: string, idx: number) => (
-                  paragraph.trim() ? <p key={idx} className="text-base leading-relaxed text-slate-600 mb-4 whitespace-pre-line">{paragraph}</p> : null
-                ));
+                let firstTitleFound = false;
+                return matchedTextObj.text.split('\n').map((paragraph: string, idx: number) => {
+                  if (!paragraph.trim()) return null;
+
+                  if (!firstTitleFound) {
+                    firstTitleFound = true;
+                    return <p key={idx} className="text-xl font-bold text-slate-800 mb-6 whitespace-pre-line">{paragraph}</p>;
+                  }
+
+                  return <p key={idx} className="text-base leading-relaxed text-slate-600 mb-4 whitespace-pre-line">{paragraph}</p>;
+                });
               }
 
               return (
