@@ -4,6 +4,7 @@ import { useWebHaptics } from 'web-haptics/react';
 import html2canvas from 'html2canvas';
 import data from '../data.json';
 import precomputedRoutes from './routes.json';
+import themeTexts from './texts.json';
 import MapComponent from './MapComponent';
 import FilterPanel from './FilterPanel';
 import type { GenderFilter, ThemesState } from './FilterPanel';
@@ -319,34 +320,35 @@ export default function App() {
             <p className="text-lg leading-relaxed text-slate-700 font-medium mb-4">
               Questa è una scheda tematica. Le pietre d'inciampo non sono solo luoghi di memoria statica, ma snodi di storie complesse che si intrecciano con i percorsi della città.
             </p>
-            <p className="text-base leading-relaxed text-slate-600 mb-4">
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
-              Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
-              Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.
-              Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
-              Curabitur pretium tincidunt lacus. Nulla gravida orci a odio. Nullam varius, turpis et commodo pharetra,
-              est eros bibendum elit, nec luctus magna felis sollicitudin mauris. Integer in mauris eu nibh euismod gravida.
-              Duis ac tellus et risus vulputate vehicula. Donec lobortis risus a elit. Etiam tempor. Ut ullamcorper,
-              ligula eu tempor congue, eros est euismod turpis, id tincidunt sapien risus a quam. Maecenas fermentum consequat mi.
-              Donec fermentum. Pellentesque malesuada nulla a mi. Duis sapien sem, aliquet nec, commodo eget, consequat quis, neque.
-              Aliquam faucibus, elit ut dictum aliquet, felis nisl adipiscing sapien, sed malesuada diam lacus eget erat.
-            </p>
-            <p className="text-base leading-relaxed text-slate-600 mb-4">
-              Cras mollis scelerisque nunc. Nullam arcu. Aliquam consequat. Curabitur augue lorem, dapibus quis, laoreet et,
-              pretium ac, nisi. Aenean magna nisl, mollis quis, molestie eu, feugiat in, orci. In hac habitasse platea dictumst.
-              Fusce convallis, mauris imperdiet gravida bibendum, nisl turpis suscipit mauris, sed placerat ipsum urna sed risus.
-              Mauris quam enim, interdum sit amet, imperdiet in, fringilla sit amet, leo. Praesent in arcu. Praesent sodales
-              auctor neque. Pellentesque nec leo id orci tristique faucibus. Vivamus consequat pede id urna.
-              Suspendisse feugiat, pede et suscipit vestibulum, wisi lorem mattis lorem, quis vestibulum leo orci id nisi.
-            </p>
-            <p className="text-base leading-relaxed text-slate-600 mb-4">
-              Aliquam erat volutpat. Proin nonummy, wisi ac lobortis aliquam, justo odio gravida velit, et posuere neque quam sit amet magna.
-              Morbi a nulla. Suspendisse non wisi. Sed dapibus tempor leo. In wisi purus, accumsan quis, facilisis vel, luctus adipiscing,
-              orci. Pellentesque sed sem. Integer nonummy tristique nisi. Sed varius mauris a neque. Etiam sem pede, dictum id, congue in,
-              sodales id, est. Nam nisl wisi, blandit a, tristique ut, varius ut, felis. Nam pulvinar adipiscing nibh.
-              Mauris sed leo. Nulla cursus mauris imperdiet arcu. Proin id enim a metus consequat rutrum. In rhoncus ipsum imperdiet odio.
-              Duis ullamcorper. Duis a diam. Donec bibendum elit varius ipsum tempus laoreet. Etiam tristique. Aliquam id libero ullamcorper odio.
-            </p>
+            {activeDetail && (() => {
+              const matchedTextObj = themeTexts.find(t =>
+                t.theme.toLowerCase() === activeDetail.theme.toLowerCase() &&
+                (t.name.toLowerCase() === activeDetail.name.toLowerCase() || (t.aliases && t.aliases.some((a: string) => a.toLowerCase() === activeDetail.name.toLowerCase())))
+              );
+
+              if (matchedTextObj && matchedTextObj.text) {
+                return matchedTextObj.text.split('\n').map((paragraph: string, idx: number) => (
+                  paragraph.trim() ? <p key={idx} className="text-base leading-relaxed text-slate-600 mb-4 whitespace-pre-line">{paragraph}</p> : null
+                ));
+              }
+
+              return (
+                <>
+                  <p className="text-base leading-relaxed text-slate-600 mb-4">
+                    Testo di approfondimento in arrivo per questa pietra. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
+                    Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
+                    Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.
+                    Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+                  </p>
+                  <p className="text-base leading-relaxed text-slate-600 mb-4">
+                    Curabitur pretium tincidunt lacus. Nulla gravida orci a odio. Nullam varius, turpis et commodo pharetra,
+                    est eros bibendum elit, nec luctus magna felis sollicitudin mauris. Integer in mauris eu nibh euismod gravida.
+                    Duis ac tellus et risus vulputate vehicula. Donec lobortis risus a elit. Etiam tempor. Ut ullamcorper,
+                    ligula eu tempor congue, eros est euismod turpis, id tincidunt sapien risus a quam. Maecenas fermentum consequat mi.
+                  </p>
+                </>
+              );
+            })()}
           </div>
         </SheetContent>
       </Sheet >
