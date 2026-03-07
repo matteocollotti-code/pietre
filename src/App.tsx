@@ -6,6 +6,7 @@ import data from '../data.json';
 import precomputedRoutes from './routes.json';
 import themeTexts from './texts.json';
 import biosData from './bios.json';
+import photosData from './photos.json';
 import MapComponent from './MapComponent';
 import FilterPanel from './FilterPanel';
 import type { GenderFilter, ThemesState } from './FilterPanel';
@@ -312,16 +313,28 @@ export default function App() {
                 <Info className="w-6 h-6" />
               </div>
               <SheetTitle className="text-3xl font-extrabold bg-gradient-to-r from-orange-500 to-purple-600 bg-clip-text text-transparent">
-                {activeDetail?.theme === 'Biografia' ? 'Biografia' : `Percorso: ${activeDetail?.theme}`}
+                {activeDetail?.theme === 'Biografia' ? 'Biografia' : activeDetail?.theme === 'Guarda Foto' ? 'Fotografia' : `Percorso: ${activeDetail?.theme}`}
               </SheetTitle>
             </div>
             <p className="text-base text-slate-500 font-semibold tracking-wide ml-[3.25rem]">
-              {activeDetail?.theme === 'Biografia' ? 'La vita di: ' : 'Tema dedicato a: '}<span className="text-slate-800">{activeDetail?.name}</span>
+              {activeDetail?.theme === 'Biografia' || activeDetail?.theme === 'Guarda Foto' ? '' : 'Tema dedicato a: '}<span className="text-slate-800">{activeDetail?.name}</span>
             </p>
           </SheetHeader>
           <div className="flex-1 overflow-y-auto px-1 py-6 prose prose-slate text-justify">
 
             {activeDetail && (() => {
+              if (activeDetail.theme === 'Guarda Foto') {
+                const matchedPhoto = photosData.find((p: any) => p.name === activeDetail.name);
+                if (matchedPhoto) {
+                  return (
+                    <div className="flex flex-col items-center justify-center h-full w-full py-4">
+                      <img src={import.meta.env.BASE_URL + matchedPhoto.file.replace(/^\//, '')} alt={`Foto di ${activeDetail.name}`} className="max-w-full max-h-[60vh] object-contain rounded-xl shadow-lg border border-slate-200" />
+                    </div>
+                  );
+                }
+                return <p className="text-center text-slate-500 mt-10">Foto non trovata.</p>;
+              }
+
               let matchedTextObj: any = null;
 
               if (activeDetail.theme === 'Biografia') {

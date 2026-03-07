@@ -5,8 +5,10 @@ import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 import { Button } from '@/components/ui/button';
 import biosData from './bios.json';
+import photosData from './photos.json';
 
 const namesWithBios = new Set<string>(biosData.flatMap((b: any) => b.matches || []));
+const namesWithPhotos = new Set<string>(photosData.map((p: any) => p.name));
 
 // Fix per l'icona di default di Leaflet in React
 delete (L.Icon.Default.prototype as any)._getIconUrl;
@@ -181,6 +183,9 @@ export default function MapComponent({ markers, routes = [], onOpenDetail, conta
                                             )}
                                             {namesWithBios.has(item.name) && (
                                                 <Button size="sm" variant="outline" className="w-full text-[11px] h-7 border-slate-500/50 text-slate-700 hover:bg-slate-50 bg-white/50 backdrop-blur-sm mt-1" onClick={(e) => { e.stopPropagation(); onOpenDetail?.({ name: item.name, theme: 'Biografia' }) }}>Biografia</Button>
+                                            )}
+                                            {namesWithPhotos.has(item.name) && (
+                                                <Button size="sm" variant="outline" className="w-full text-[11px] h-7 border-slate-500/50 text-slate-700 hover:bg-slate-50 bg-white/50 backdrop-blur-sm mt-1" onClick={(e) => { e.stopPropagation(); onOpenDetail?.({ name: item.name, theme: 'Guarda Foto' }) }}>Guarda Foto</Button>
                                             )}
                                         </div>
                                     </div>
