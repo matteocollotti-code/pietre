@@ -20,11 +20,8 @@
     "nameHint": "Aurelia ed Emma Finzi",
     "text": "Aurelia Allegra Finzi Levi (Vercelli, 1874) viveva a Milano con la figlia Emma Finzi (Milano, 1903). Quando iniziarono le deportazioni le due donne tentarono di riparare in Svizzera con l’aiuto di un’amica non ebrea. Furono fermate al confine e portate a San Vittore; il 6 dicembre 1943 dal binario 21 vennero deportate ad Auschwitz. Il marito di Aurelia e padre di Emma, morto nel 1935, era stato un fascista della prima ora e in famiglia quelle convinzioni erano rimaste radicate.",
     "matches": [
-      "Finzi Cesare",
-      "Finzi Edgardo",
-      "Finzi Emma Laura",
       "Finzi Levi Aurelia Allegra",
-      "Finzi William"
+      "Finzi Emma Laura"
     ]
   },
   {
@@ -48,8 +45,8 @@
     "nameHint": "Olga e Ines Revere",
     "text": "Olga Revere nacque a Mantova nel 1897 e la sorella Ines nel 1902. Vivevano a Milano, in viale Monza. Con l’inizio dei bombardamenti si spostarono a Stresa; ma Olga e Ines tentarono di rientrare nella loro abitazione per recuperare ciò che avevano lasciato nell’appartamento. E lì vennero denunciate dalla portinaia. Furono arrestate il 3 dicembre 1943, condotte a San Vittore e da lì deportate dal binario 21 ad Auschwitz il 30 gennaio 1944.",
     "matches": [
-      "Revere Ines",
-      "Revere Olga"
+      "Revere Olga",
+      "Revere Ines"
     ]
   },
   {
@@ -57,8 +54,7 @@
     "nameHint": "Olga Levi Ascoli",
     "text": "Olga Luigia Ascoli nacque a Livorno nel 1877. Sposò Guido Levi e i due si trasferirono a Milano.  Tra la fine del 1942 e l’inizio del 1943, sotto l’incalzare dei bombardamenti aerei alleati, Olga Luigia e Guido sfollarono a Como. Arrestati nella loro casa, dopo qualche giorno di detenzione nel carcere di Como furono trasferiti nel carcere di Varese, da qui a S. Vittore di Milano e deportati il 6 dicembre 1943 ad  Auschwitz.",
     "matches": [
-      "Revere Ines",
-      "Revere Olga"
+      "Levi Ascoli Olga Luigia"
     ]
   },
   {
@@ -107,8 +103,6 @@
     "nameHint": "Olga Loewy Segre",
     "text": "Olga Lövvy nacque a Torino nel 1878. Nel 1898 lei e Giuseppe Segre si sposarono. Dal 1930, dopo la morte della moglie del figlio Alberto, Olga e Giuseppe vissero con lui e con la nipote Liliana, la figlia di Alberto. Nel maggio 1944, a seguito di una delazione, vennero arrestati a Inverigno, dove si erano trasferiti. Deportati a Fossoli, furono poi mandati ad Auschwitz il 30 giugno 1944.",
     "matches": [
-      "Revere Ines",
-      "Revere Olga",
       "Segre Olga Lovvy"
     ]
   },
@@ -117,20 +111,7 @@
     "nameHint": "Emilia ed Elena Levi",
     "text": "Elena Levi (1901) lavorò per un breve periodo nella scuola materna ebraica. Dopo la nascita del primo figlio Italo (1931) il lavoro fuori casa si interruppe, ed Elena si dedicò pienamente  alla cura di Italo e, più tardi, di Emilia (1938), insieme al marito Aldo (1898). Dopo l’emanazione delle leggi razziali e con l’inizio delle deportazioni, la famiglia tentò la fuga in Svizzera. Fu arrestata al confine, rinchiusa nel carcere di Como, poi nel campo di Fossoli e da lì deportata ad Auschwitz il 22 febbraio 1944. Elena ed Emilia vennero uccise all’arrivo.",
     "matches": [
-      "Finzi Levi Aurelia Allegra",
-      "Foà Levi Bianca",
-      "Levi Aldo",
-      "Levi Ascoli Olga Luigia",
-      "Levi Emila",
-      "Levi Fausto",
-      "Levi Giuseppe",
-      "Levi Guglielmo",
-      "Levi Guido",
-      "Levi Italo",
-      "Levi  Renato",
-      "Levi Samuele",
-      "Levi Viterbo Elena",
-      "Vitali in Levi Ada"
+      "Levi Viterbo Elena"
     ]
   },
   {
@@ -139,7 +120,6 @@
     "text": "Liliana Latis Bolaffi (1921) era la più giovane della sua famiglia: viveva con i genitori, Leone (1886) e Annita (1892), e con il fratello Giorgio (1920). Dopo le scuole superiori non poterono proseguire gli studi a causa delle leggi razziali; Liliana riuscì però a collaborare con una rivista usando uno pseudonimo. Dopo l’occupazione nazista, mentre Giorgio entrava nella Resistenza, Liliana tentò di passare in Svizzera con i genitori. La famiglia venne arrestata, condotta al carcere di Varese, poi a San Vittore, e il 30 gennaio 1944 deportata ad Auschwitz.",
     "matches": [
       "Bolaffi Latis Annita",
-      "Latis Leone",
       "Latis Liliana"
     ]
   },
@@ -204,7 +184,8 @@
     "nameHint": "Graziella e Ida Mafalda Morais",
     "text": "Ida Mafalda Morais (1903) e Carlo Morais (1901) vivevano a Milano con la figlia Graziella e il figlio Alberto. Le leggi razziali irruppero con violenza in una quotidianità fatta di studio e lavoro, rendendola sempre più difficile da sostenere. Nel dicembre 1943 la famiglia tentò la fuga in Svizzera, affidandosi ai passatori incaricati di accompagnarla al confine: il tradimento portò all’arresto, alla detenzione a San Vittore e infine alla deportazione ad Auschwitz il 30 gennaio 1944, dal binario 21 della Stazione Centrale di Milano.",
     "matches": [
-      "Moorais Graziella"
+      "Moorais Graziella",
+      "Tedeschi in Morais Mafalda"
     ]
   },
   {
@@ -252,7 +233,7 @@
     "nameHint": "Lea Landau",
     "text": "Lea Elisa Landau nacque a Odessa nel 1886. Arrivò a Milano da sola, come assistente di una ballerina del corpo di ballo russo. Quando, a causa della guerra, la ballerina tornò in patria, Lea rimase bloccata in città. Si guadagnava da vivere offrendo assistenza e compagnia ad altre signore. Durante i giorni di guerra, per un periodo, sfollò a Teglio con una di queste famiglie; quando seppe che le stavano requisendo la casa rientrò a Milano, temendo di perdere tutto. Venne arrestata in data ignota, detenuta prima a San Vittore e poi a Fossoli, e da lì deportata il 16 maggio 1944.",
     "matches": [
-      "Dana Behar Lea"
+      "Landau Lea Elisa"
     ]
   },
   {
@@ -276,9 +257,8 @@
     "nameHint": "Violetta e Bahia  Silvera",
     "text": "Violetta Silvera nacque a Milano da Bahia e Lelio, coppia emigrata dalla Siria. Viveva in città con i genitori e con due fratelli; uno dei due era affetto da poliomielite. Un terzo fratello viveva in Egitto con la nonna materna. Dopo aver aiutato il fratello malato a rifugiarsi in Svizzera, Violetta e i genitori tentarono l’espatrio, ma vennero arrestati al confine. Seguì la detenzione a Varese e il trasferimento a San Vittore. Il 30 gennaio 1944 Violetta, insieme ai genitori, venne deportata dal binario 21 della Stazione Centrale.",
     "matches": [
-      "Silvera Laniado Bahia",
-      "Silvera Lelio",
-      "Silvera Violetta"
+      "Silvera Violetta",
+      "Silvera Laniado Bahia"
     ]
   }
 ]
