@@ -185,7 +185,7 @@ export default function MapComponent({ markers, routes = [], onOpenDetail, conta
                                                 <Button size="sm" variant="outline" className="w-full text-[11px] h-7 border-slate-500/50 text-slate-700 hover:bg-slate-50 bg-white/50 backdrop-blur-sm mt-1" onClick={(e) => { e.stopPropagation(); onOpenDetail?.({ name: item.name, theme: 'Biografia' }) }}>Biografia</Button>
                                             )}
                                             {namesWithPhotos.has(item.name) && (
-                                                <Button size="sm" variant="outline" className="w-full text-[11px] h-7 border-slate-500/50 text-slate-700 hover:bg-slate-50 bg-white/50 backdrop-blur-sm mt-1" onClick={(e) => { e.stopPropagation(); onOpenDetail?.({ name: item.name, theme: 'Guarda Foto' }) }}>Guarda Foto</Button>
+                                                <Button size="sm" variant="outline" className="w-full text-[11px] h-7 border-slate-500/50 text-slate-700 hover:bg-slate-50 bg-white/50 backdrop-blur-sm mt-1" onClick={(e) => { e.stopPropagation(); onOpenDetail?.({ name: item.name, theme: 'Vedi Immagine' }) }}>Vedi Immagine</Button>
                                             )}
                                         </div>
                                     </div>
