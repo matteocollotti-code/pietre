@@ -4,6 +4,9 @@ import MarkerClusterGroup from 'react-leaflet-cluster';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 import { Button } from '@/components/ui/button';
+import biosData from './bios.json';
+
+const namesWithBios = new Set<string>(biosData.flatMap((b: any) => b.matches || []));
 
 // Fix per l'icona di default di Leaflet in React
 delete (L.Icon.Default.prototype as any)._getIconUrl;
@@ -175,6 +178,9 @@ export default function MapComponent({ markers, routes = [], onOpenDetail, conta
                                             )}
                                             {(item.raw?.amore === 1 || item.raw?.amore === '1') && (
                                                 <Button size="sm" variant="outline" className="w-full text-[11px] h-7 border-red-500/50 text-red-700 hover:bg-red-50 bg-white/50 backdrop-blur-sm" onClick={(e) => { e.stopPropagation(); onOpenDetail?.({ name: item.name, theme: 'Amore' }) }}>Tema Amore</Button>
+                                            )}
+                                            {namesWithBios.has(item.name) && (
+                                                <Button size="sm" variant="outline" className="w-full text-[11px] h-7 border-slate-500/50 text-slate-700 hover:bg-slate-50 bg-white/50 backdrop-blur-sm mt-1" onClick={(e) => { e.stopPropagation(); onOpenDetail?.({ name: item.name, theme: 'Biografia' }) }}>Biografia</Button>
                                             )}
                                         </div>
                                     </div>

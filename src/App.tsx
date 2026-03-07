@@ -5,6 +5,7 @@ import html2canvas from 'html2canvas';
 import data from '../data.json';
 import precomputedRoutes from './routes.json';
 import themeTexts from './texts.json';
+import biosData from './bios.json';
 import MapComponent from './MapComponent';
 import FilterPanel from './FilterPanel';
 import type { GenderFilter, ThemesState } from './FilterPanel';
@@ -311,36 +312,43 @@ export default function App() {
                 <Info className="w-6 h-6" />
               </div>
               <SheetTitle className="text-3xl font-extrabold bg-gradient-to-r from-orange-500 to-purple-600 bg-clip-text text-transparent">
-                Percorso: {activeDetail?.theme}
+                {activeDetail?.theme === 'Biografia' ? 'Biografia' : `Percorso: ${activeDetail?.theme}`}
               </SheetTitle>
             </div>
-            <p className="text-base text-slate-500 font-semibold tracking-wide ml-[3.25rem]">Tema dedicato a: <span className="text-slate-800">{activeDetail?.name}</span></p>
+            <p className="text-base text-slate-500 font-semibold tracking-wide ml-[3.25rem]">
+              {activeDetail?.theme === 'Biografia' ? 'La vita di: ' : 'Tema dedicato a: '}<span className="text-slate-800">{activeDetail?.name}</span>
+            </p>
           </SheetHeader>
           <div className="flex-1 overflow-y-auto px-1 py-6 prose prose-slate text-justify">
 
             {activeDetail && (() => {
-              const normalizeNameForMatch = (name: string) => {
-                return name.toLowerCase()
-                  .normalize("NFD").replace(/[\u0300-\u036f]/g, "")
-                  .replace(/['"’]/g, '').trim();
-              };
+              let matchedTextObj: any = null;
 
-              // The name in the database (activeDetail.name)
-              const dNameNormalized = normalizeNameForMatch(activeDetail.name);
+              if (activeDetail.theme === 'Biografia') {
+                const matchedBio = biosData.find((b: any) => b.matches?.includes(activeDetail.name));
+                if (matchedBio) {
+                  matchedTextObj = { text: matchedBio.text };
+                }
+              } else {
+                const normalizeNameForMatch = (name: string) => {
+                  return name.toLowerCase()
+                    .normalize("NFD").replace(/[\u0300-\u036f]/g, "")
+                    .replace(/['"’]/g, '').trim();
+                };
 
-              const matchedTextObj = themeTexts.find(t => {
-                if (t.theme.toLowerCase() !== activeDetail.theme.toLowerCase()) return false;
+                const dNameNormalized = normalizeNameForMatch(activeDetail.name);
 
-                const namesToCheck = [t.name, ...(t.aliases || [])].map(normalizeNameForMatch);
+                matchedTextObj = themeTexts.find(t => {
+                  if (t.theme.toLowerCase() !== activeDetail.theme.toLowerCase()) return false;
 
-                return namesToCheck.some(nameToMatch => {
-                  const textNameParts = nameToMatch.split(' ').filter(Boolean);
-                  // Does data.json name contain all parts of the text's name?
-                  // e.g. text name "JENIDE RUSSO" -> parts ["jenide", "russo"]
-                  // dName "Russo Jenide" contains both.
-                  return textNameParts.every(part => dNameNormalized.includes(part));
+                  const namesToCheck = [t.name, ...(t.aliases || [])].map(normalizeNameForMatch);
+
+                  return namesToCheck.some(nameToMatch => {
+                    const textNameParts = nameToMatch.split(' ').filter(Boolean);
+                    return textNameParts.every(part => dNameNormalized.includes(part));
+                  });
                 });
-              });
+              }
 
               if (matchedTextObj && matchedTextObj.text) {
                 let firstTitleFound = false;
