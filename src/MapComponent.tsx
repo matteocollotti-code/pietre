@@ -100,6 +100,17 @@ function MilanBoundary() {
     return null;
 }
 
+function MapController() {
+    const map = useMap();
+    useEffect(() => {
+        (window as any).resetMapToMilanOverview = () => {
+            // Zoom out to show entire city of Milan
+            map.setView([45.4642, 9.1900], 12, { animate: false });
+        };
+    }, [map]);
+    return null;
+}
+
 interface MapProps {
     markers: any[];
     routes?: { id: string, color: string, points: [number, number][] }[];
@@ -124,12 +135,13 @@ export default function MapComponent({ markers, routes = [], onOpenDetail, conta
                     subdomains="abcd"
                     maxZoom={20}
                 />
+                <MapController />
                 <MilanBoundary />
 
                 {routes.map(r => (
                     <Polyline
                         key={r.id}
-                        positions={r.points}
+                        positions={r.points as any} // Allow array of arrays for MultiPolyline
                         pathOptions={{ color: r.color, weight: 3, opacity: 0.8 }}
                     />
                 ))}

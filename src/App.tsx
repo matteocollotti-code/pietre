@@ -113,6 +113,12 @@ export default function App() {
     const mapElement = document.getElementById('route-map-container');
     if (!mapElement) return undefined;
 
+    if ((window as any).resetMapToMilanOverview) {
+      (window as any).resetMapToMilanOverview();
+      // Wait for the map to fully zoom out and fetch new tile images before taking the screenshot
+      await new Promise(r => setTimeout(r, 800));
+    }
+
     try {
       const canvas = await html2canvas(mapElement, {
         useCORS: true,
