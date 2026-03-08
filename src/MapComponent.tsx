@@ -141,7 +141,7 @@ export default function MapComponent({ markers, routes = [], onOpenDetail, conta
                 {routes.map(r => (
                     <Polyline
                         key={r.id}
-                        positions={r.points as any} // Allow array of arrays for MultiPolyline
+                        positions={r.points}
                         pathOptions={{ color: r.color, weight: 3, opacity: 0.8 }}
                     />
                 ))}
