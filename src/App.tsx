@@ -23,7 +23,7 @@ import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 
 export default function App() {
-  const appDescription = 'Itinerari di memoria a Milano';
+  const appDescription = 'Itinerari al femminile a Milano';
   const { trigger } = useWebHaptics();
 
   // Parsing Age from data
@@ -243,7 +243,7 @@ export default function App() {
           </div>
           <div className="flex flex-col">
             <h1 className="text-xl font-bold bg-gradient-to-r from-orange-500 to-purple-600 bg-clip-text text-transparent">le vie della parità</h1>
-            <p className="text-xs text-slate-600 font-medium">Itinerari di memoria a Milano</p>
+            <p className="text-xs text-slate-600 font-medium">Itinerari al femminile a Milano</p>
           </div>
         </div>
 
