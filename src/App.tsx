@@ -1,7 +1,6 @@
 import { useState, useMemo, useEffect } from 'react';
 import { Filter, Info, Download } from 'lucide-react';
 import { useWebHaptics } from 'web-haptics/react';
-import html2canvas from 'html2canvas';
 import data from '../data.json';
 import precomputedRoutes from './routes.json';
 import themeTexts from './texts.json';
@@ -54,9 +53,15 @@ export default function App() {
     const fadeTimeout = window.setTimeout(() => setFadeSplash(true), 1800);
     const hideTimeout = window.setTimeout(() => setShowSplash(false), 2500);
 
+    // Inject a special hook for puppeteer static map generation script
+    (window as any)._forceThemeForScreenshot = (theme: string) => {
+      setThemes({ corpi: false, case: false, cose: false, amore: false, [theme]: true });
+    };
+
     return () => {
       window.clearTimeout(fadeTimeout);
       window.clearTimeout(hideTimeout);
+      delete (window as any)._forceThemeForScreenshot;
     };
   }, []);
 
@@ -113,30 +118,32 @@ export default function App() {
   }, [themes]);
 
   // Generate and download directions for active routes as a branded PDF
-  const captureMapScreenshot = async (): Promise<{ dataUrl: string; aspectRatio: number } | undefined> => {
-    const mapElement = document.getElementById('route-map-container');
-    if (!mapElement) return undefined;
-
-    if ((window as any).resetMapToMilanOverview) {
-      (window as any).resetMapToMilanOverview();
-      // Wait for the map to fully fit the new bounds and fetch tiles before capturing
-      await new Promise(r => setTimeout(r, 1200));
-    }
-
-    try {
-      const canvas = await html2canvas(mapElement, {
-        useCORS: true,
-        allowTaint: false,
-        backgroundColor: '#f8fafc',
-        scale: Math.min(window.devicePixelRatio || 1, 2),
-      });
-      return {
-        dataUrl: canvas.toDataURL('image/jpeg', 0.92),
-        aspectRatio: canvas.width / canvas.height,
+  const loadStaticMapImage = async (themeKey: string): Promise<{ dataUrl: string; aspectRatio: number } | undefined> => {
+    return new Promise((resolve) => {
+      const img = new Image();
+      img.crossOrigin = 'Anonymous';
+      // Load the static image from the public folder
+      img.src = `${import.meta.env.BASE_URL}maps/map_${themeKey}.jpg`;
+      img.onload = () => {
+        const canvas = document.createElement('canvas');
+        canvas.width = img.width;
+        canvas.height = img.height;
+        const ctx = canvas.getContext('2d');
+        if (ctx) {
+          ctx.drawImage(img, 0, 0);
+          resolve({
+            dataUrl: canvas.toDataURL('image/jpeg', 0.92),
+            aspectRatio: img.width / img.height
+          });
+        } else {
+          resolve(undefined);
+        }
       };
-    } catch {
-      return undefined;
-    }
+      img.onerror = () => {
+        console.error(`Failed to load static map image for theme: ${themeKey}`);
+        resolve(undefined);
+      };
+    });
   };
 
   const downloadDirections = async () => {
@@ -146,41 +153,22 @@ export default function App() {
     setIsPdfGenerating(true);
     setPdfProgress(10); // Start progress
 
-    // Save original themes state to restore later
-    const originalThemes = { ...themes };
-
     const screenshots: Record<string, { dataUrl: string; aspectRatio: number }> = {};
-
-    // Fallback overview screenshot in case we need it
-    const mapScreenshot = await captureMapScreenshot();
 
     setPdfProgress(30);
 
-    // Capture isolated screenshot for each active theme
+    // Fetch static images for each active theme
     for (let i = 0; i < activeThemes.length; i++) {
       const themeKey = activeThemes[i];
-      // Isolate this theme
-      const isolatedThemes = Object.keys(themes).reduce((acc, k) => {
-        acc[k as keyof ThemesState] = k === themeKey;
-        return acc;
-      }, {} as ThemesState);
 
-      setThemes(isolatedThemes);
-
-      // Wait for React to apply isolated theme state
-      await new Promise(r => setTimeout(r, 400));
-
-      const shot = await captureMapScreenshot();
+      const shot = await loadStaticMapImage(themeKey);
       if (shot) {
         screenshots[themeKey] = shot;
       }
 
-      setPdfProgress(30 + Math.round(((i + 1) / activeThemes.length) * 50)); // Scale up to 80%
+      setPdfProgress(30 + Math.round(((i + 1) / activeThemes.length) * 50));
     }
 
-    // Restore original themes view
-    setThemes(originalThemes);
-    await new Promise(r => setTimeout(r, 400));
     setPdfProgress(90);
 
     const r = precomputedRoutes as unknown as Record<string, [number, number][]>;
@@ -223,7 +211,7 @@ export default function App() {
       };
     });
 
-    const doc = generateItineraryPDF(sections, screenshots, mapScreenshot?.aspectRatio);
+    const doc = generateItineraryPDF(sections, screenshots, screenshots[activeThemes[0]]?.aspectRatio);
     doc.save(`itinerario_${activeThemes.join('_')}.pdf`);
 
     setPdfProgress(100);
