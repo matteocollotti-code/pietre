@@ -91,7 +91,11 @@ interface RouteSection {
   description?: string;
 }
 
-export function generateItineraryPDF(sections: RouteSection[], mapScreenshotDataUrl?: string, mapAspectRatio?: number) {
+export function generateItineraryPDF(
+  sections: RouteSection[],
+  screenshots?: Record<string, { dataUrl: string; aspectRatio: number }>,
+  defaultAspectRatio?: number
+) {
   const doc = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
 
   const pageW = doc.internal.pageSize.getWidth();
@@ -191,6 +195,7 @@ export function generateItineraryPDF(sections: RouteSection[], mapScreenshotData
   for (const section of sections) {
     const themeColor = THEME_COLORS[section.themeKey] ?? BRAND.purple;
     const themeLabel = THEME_CONFIG[section.themeKey]?.label ?? section.themeKey;
+    const sectionScreenshot = screenshots ? screenshots[section.themeKey] : undefined;
 
     // ── Overview page: description (left) + map screenshot (right) ──
     doc.addPage();
@@ -222,13 +227,13 @@ export function generateItineraryPDF(sections: RouteSection[], mapScreenshotData
     // Resolve description: prefer value passed in section, fall back to static config
     const descText = section.description ?? THEME_CONFIG[section.themeKey]?.description ?? '';
 
-    if (mapScreenshotDataUrl) {
+    if (sectionScreenshot) {
       // Right column: screenshot (portrait/vertical format)
       const imgColW = contentW * 0.42;
       const imgX = pageW - margin - imgColW;
       const imgMaxH = overviewBodyH;
       // The map sidebar captures a vertical (portrait) region; default ratio < 1 reflects that.
-      const ratio = mapAspectRatio ?? 0.6;
+      const ratio = sectionScreenshot.aspectRatio ?? defaultAspectRatio ?? 0.6;
       let imgW = imgColW;
       let imgH = imgW / ratio;
       if (imgH > imgMaxH) {
@@ -240,7 +245,7 @@ export function generateItineraryPDF(sections: RouteSection[], mapScreenshotData
       // Subtle frame behind image
       doc.setFillColor(242, 240, 255);
       doc.roundedRect(imgX - 1.5, imgY - 1.5, imgW + 3, imgH + 3, 3, 3, 'F');
-      doc.addImage(mapScreenshotDataUrl, 'JPEG', imgX, imgY, imgW, imgH, undefined, 'FAST');
+      doc.addImage(sectionScreenshot.dataUrl, 'JPEG', imgX, imgY, imgW, imgH, undefined, 'FAST');
 
       // Left column: description text
       const textColW = contentW - imgColW - 8;

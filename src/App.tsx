@@ -139,6 +139,37 @@ export default function App() {
     const activeThemes = Object.entries(themes).filter(([, v]) => v).map(([k]) => k);
     if (activeThemes.length === 0) return;
 
+    // Save original themes state to restore later
+    const originalThemes = { ...themes };
+
+    const screenshots: Record<string, { dataUrl: string; aspectRatio: number }> = {};
+
+    // Fallback overview screenshot in case we need it
+    const mapScreenshot = await captureMapScreenshot();
+
+    // Capture isolated screenshot for each active theme
+    for (const themeKey of activeThemes) {
+      // Isolate this theme
+      const isolatedThemes = Object.keys(themes).reduce((acc, k) => {
+        acc[k as keyof ThemesState] = k === themeKey;
+        return acc;
+      }, {} as ThemesState);
+
+      setThemes(isolatedThemes);
+
+      // Wait for React to apply state and Leaflet to re-render the single line
+      await new Promise(r => setTimeout(r, 600));
+
+      const shot = await captureMapScreenshot();
+      if (shot) {
+        screenshots[themeKey] = shot;
+      }
+    }
+
+    // Restore original themes view
+    setThemes(originalThemes);
+    await new Promise(r => setTimeout(r, 400));
+
     const r = precomputedRoutes as unknown as Record<string, [number, number][]>;
 
     const sections = activeThemes.map((themeKey) => {
@@ -179,8 +210,7 @@ export default function App() {
       };
     });
 
-    const mapScreenshot = await captureMapScreenshot();
-    const doc = generateItineraryPDF(sections, mapScreenshot?.dataUrl, mapScreenshot?.aspectRatio);
+    const doc = generateItineraryPDF(sections, screenshots, mapScreenshot?.aspectRatio);
     doc.save(`itinerario_${activeThemes.join('_')}.pdf`);
   };
 
