@@ -46,6 +46,10 @@ export default function App() {
   const [showSplash, setShowSplash] = useState(true);
   const [fadeSplash, setFadeSplash] = useState(false);
 
+  // PDF Generation State
+  const [isPdfGenerating, setIsPdfGenerating] = useState(false);
+  const [pdfProgress, setPdfProgress] = useState(0);
+
   useEffect(() => {
     const fadeTimeout = window.setTimeout(() => setFadeSplash(true), 1800);
     const hideTimeout = window.setTimeout(() => setShowSplash(false), 2500);
@@ -139,16 +143,23 @@ export default function App() {
     const activeThemes = Object.entries(themes).filter(([, v]) => v).map(([k]) => k);
     if (activeThemes.length === 0) return;
 
+    setIsPdfGenerating(true);
+    setPdfProgress(10); // Start progress
+
     // Save original themes state to restore later
     const originalThemes = { ...themes };
 
     const screenshots: Record<string, { dataUrl: string; aspectRatio: number }> = {};
 
     // Fallback overview screenshot in case we need it
+    if ((window as any).resetMapToMilanOverview) (window as any).resetMapToMilanOverview();
     const mapScreenshot = await captureMapScreenshot();
 
+    setPdfProgress(30);
+
     // Capture isolated screenshot for each active theme
-    for (const themeKey of activeThemes) {
+    for (let i = 0; i < activeThemes.length; i++) {
+      const themeKey = activeThemes[i];
       // Isolate this theme
       const isolatedThemes = Object.keys(themes).reduce((acc, k) => {
         acc[k as keyof ThemesState] = k === themeKey;
@@ -160,15 +171,22 @@ export default function App() {
       // Wait for React to apply state and Leaflet to re-render the single line
       await new Promise(r => setTimeout(r, 600));
 
+      // Force full city reset before every shot to guarantee consistency
+      if ((window as any).resetMapToMilanOverview) (window as any).resetMapToMilanOverview();
+      await new Promise(r => setTimeout(r, 800)); // allow map to settle
+
       const shot = await captureMapScreenshot();
       if (shot) {
         screenshots[themeKey] = shot;
       }
+
+      setPdfProgress(30 + Math.round(((i + 1) / activeThemes.length) * 50)); // Scale up to 80%
     }
 
     // Restore original themes view
     setThemes(originalThemes);
     await new Promise(r => setTimeout(r, 400));
+    setPdfProgress(90);
 
     const r = precomputedRoutes as unknown as Record<string, [number, number][]>;
 
@@ -212,6 +230,12 @@ export default function App() {
 
     const doc = generateItineraryPDF(sections, screenshots, mapScreenshot?.aspectRatio);
     doc.save(`itinerario_${activeThemes.join('_')}.pdf`);
+
+    setPdfProgress(100);
+    setTimeout(() => {
+      setIsPdfGenerating(false);
+      setPdfProgress(0);
+    }, 800);
   };
 
   return (
@@ -229,6 +253,28 @@ export default function App() {
             </div>
             <p className="mb-2 text-sm uppercase tracking-[0.3em] text-muted-foreground animate-[splash-slide-up_0.5s_ease-out_0.3s_both]">le vie della parità</p>
             <p className="mt-3 text-sm text-muted-foreground animate-[splash-slide-up_0.5s_ease-out_0.6s_both]">{appDescription}</p>
+          </div>
+        </div>
+      )}
+
+      {/* OVERLAY CARICAMENTO PDF */}
+      {isPdfGenerating && (
+        <div className="fixed inset-0 z-[3000] flex flex-col items-center justify-center bg-slate-900/80 backdrop-blur-sm transition-opacity duration-300">
+          <div className="w-64 flex flex-col items-center gap-6">
+            <div className="relative flex items-center justify-center">
+              <div className="absolute inset-0 rounded-full border-t-2 border-orange-500 animate-[spin_1s_linear_infinite]" />
+              <Download className="w-8 h-8 text-white animate-pulse m-6" />
+            </div>
+            <div className="w-full flex flex-col gap-2 text-center text-white">
+              <span className="text-sm font-semibold tracking-wide">Preparazione Itinerario PDF...</span>
+              <div className="w-full h-2 bg-slate-700 rounded-full overflow-hidden">
+                <div
+                  className="h-full bg-gradient-to-r from-orange-500 to-purple-500 transition-all duration-300 ease-out"
+                  style={{ width: `${pdfProgress}%` }}
+                />
+              </div>
+              <span className="text-xs text-slate-300">{pdfProgress}%</span>
+            </div>
           </div>
         </div>
       )}
@@ -315,13 +361,14 @@ export default function App() {
 
       {/* FLOATING DOWNLOAD BUTTON (Mobile only) */}
       {thematicRoutes.length > 0 && (
-        <div className="md:hidden fixed bottom-6 right-5 z-[999]">
+        <div className="md:hidden fixed bottom-6 left-1/2 -translate-x-1/2 z-[999] w-[90%] max-w-[300px]">
           <Button
             onClick={downloadDirections}
             aria-label="Scarica indicazioni"
-            className="rounded-full h-14 w-14 bg-gradient-to-br from-orange-500 to-purple-600 text-white shadow-2xl shadow-orange-500/40 hover:from-orange-600 hover:to-purple-700 hover:scale-105 transition-all duration-300 flex items-center justify-center"
+            className="w-full rounded-full h-14 bg-gradient-to-r from-orange-500 to-purple-600 text-white shadow-2xl shadow-orange-500/40 hover:from-orange-600 hover:to-purple-700 hover:scale-105 transition-all duration-300 flex items-center justify-center gap-3 font-semibold text-base"
           >
-            <Download className="w-6 h-6" />
+            <Download className="w-5 h-5" />
+            Scarica Itinerario
           </Button>
         </div>
       )}
