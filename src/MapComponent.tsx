@@ -106,8 +106,13 @@ function MapController() {
         (window as any).resetMapToMilanOverview = () => {
             // Close any open popups
             map.closePopup();
-            // Zoom out to show entire city of Milan
-            map.setView([45.4642, 9.1900], 12, { animate: false });
+            // Zoom out to show entire city of Milan with exact bounds
+            // Using a bounding box that covers the municipality of Milan
+            const milanBounds: L.LatLngBoundsExpression = [
+                [45.3867, 9.0408], // South West
+                [45.5359, 9.2782]  // North East
+            ];
+            map.fitBounds(milanBounds, { animate: false, padding: [10, 10] });
         };
     }, [map]);
     return null;

@@ -119,8 +119,8 @@ export default function App() {
 
     if ((window as any).resetMapToMilanOverview) {
       (window as any).resetMapToMilanOverview();
-      // Wait for the map to fully zoom out and fetch new tile images before taking the screenshot
-      await new Promise(r => setTimeout(r, 800));
+      // Wait for the map to fully fit the new bounds and fetch tiles before capturing
+      await new Promise(r => setTimeout(r, 1200));
     }
 
     try {
@@ -152,7 +152,6 @@ export default function App() {
     const screenshots: Record<string, { dataUrl: string; aspectRatio: number }> = {};
 
     // Fallback overview screenshot in case we need it
-    if ((window as any).resetMapToMilanOverview) (window as any).resetMapToMilanOverview();
     const mapScreenshot = await captureMapScreenshot();
 
     setPdfProgress(30);
@@ -168,12 +167,8 @@ export default function App() {
 
       setThemes(isolatedThemes);
 
-      // Wait for React to apply state and Leaflet to re-render the single line
-      await new Promise(r => setTimeout(r, 600));
-
-      // Force full city reset before every shot to guarantee consistency
-      if ((window as any).resetMapToMilanOverview) (window as any).resetMapToMilanOverview();
-      await new Promise(r => setTimeout(r, 800)); // allow map to settle
+      // Wait for React to apply isolated theme state
+      await new Promise(r => setTimeout(r, 400));
 
       const shot = await captureMapScreenshot();
       if (shot) {
