@@ -104,6 +104,8 @@ function MapController() {
     const map = useMap();
     useEffect(() => {
         (window as any).resetMapToMilanOverview = () => {
+            // Close any open popups
+            map.closePopup();
             // Zoom out to show entire city of Milan
             map.setView([45.4642, 9.1900], 12, { animate: false });
         };

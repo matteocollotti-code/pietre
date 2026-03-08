@@ -141,27 +141,27 @@ export function generateItineraryPDF(sections: RouteSection[], mapScreenshotData
   // Central logo (large)
   drawLogo(doc, pageW / 2, pageH * 0.32, 22);
 
-  // Tagline above title
-  doc.setFontSize(8.5);
-  doc.setTextColor(...BRAND.white);
-  doc.setFont('helvetica', 'normal');
-  doc.setCharSpace(3);
-  doc.text('LE VIE DELLA PARITÀ', pageW / 2, pageH * 0.43, { align: 'center' });
-  doc.setCharSpace(0);
-
   // Main title
   doc.setFontSize(28);
+  doc.setTextColor(...BRAND.white);
   doc.setFont('helvetica', 'bold');
-  doc.text('Itinerari', pageW / 2, pageH * 0.50, { align: 'center' });
-  doc.setFontSize(20);
+  doc.text('ITINERARI AL FEMMINILE', pageW / 2, pageH * 0.45, { align: 'center' });
+  doc.setFontSize(22);
   doc.setFont('helvetica', 'normal');
-  doc.text('al femminile a Milano', pageW / 2, pageH * 0.57, { align: 'center' });
+  doc.text('A MILANO', pageW / 2, pageH * 0.52, { align: 'center' });
+
+  // Subtitle
+  doc.setFontSize(11);
+  doc.setFont('helvetica', 'normal');
+  doc.setCharSpace(3);
+  doc.text('LE VIE DELLA PARITÀ', pageW / 2, pageH * 0.62, { align: 'center' });
+  doc.setCharSpace(0);
 
   // Thin white divider
   doc.setDrawColor(...BRAND.white);
   doc.setLineWidth(0.5);
   doc.setGState(new GState({ opacity: 0.5 }));
-  doc.line(margin + 20, pageH * 0.60, pageW - margin - 20, pageH * 0.60);
+  doc.line(margin + 20, pageH * 0.66, pageW - margin - 20, pageH * 0.66);
   doc.setGState(new GState({ opacity: 1 }));
 
   // Active routes summary
